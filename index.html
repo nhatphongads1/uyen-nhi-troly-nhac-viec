@@ -50,6 +50,11 @@
   @keyframes micpulse{0%,100%{box-shadow:0 0 0 0 rgba(210,31,43,.5);}50%{box-shadow:0 0 0 12px rgba(210,31,43,0);}}
   .mic-status{font-size:13px;color:var(--muted);margin-top:6px;min-height:20px;line-height:1.5;}
   .mic-status b{color:var(--red);}
+  .memo-row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
+  .memo-btn{border:2px dashed var(--red);background:#fff;color:var(--red);border-radius:999px;
+    padding:8px 14px;font-size:14px;font-weight:700;cursor:pointer;}
+  .memo-btn.rec{animation:micpulse 1.2s infinite;background:var(--red);color:#fff;border-style:solid;}
+  .memo-link{border:none;background:none;color:#1a73e8;font-size:14px;cursor:pointer;text-decoration:underline;padding:4px;}
   /* ---------- Tabs ---------- */
   .tabs{display:flex;gap:8px;margin:10px 0 4px;}
   .tabs button{flex:1;border:1.5px solid var(--line);background:var(--bg);padding:10px;border-radius:12px;
@@ -195,6 +200,12 @@
           <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="🎤">🎤</button>
         </div>
         <div class="mic-status" id="micStatus"></div>
+        <div class="memo-row">
+          <button class="memo-btn" id="memoBtn" onclick="toggleMemoRec()">🎤 <span id="memoBtnT"></span></button>
+          <span class="mic-status" id="memoStatus"></span>
+          <button class="memo-link" id="memoPlay" style="display:none" onclick="playMemoPreview()">▶ <span id="memoPlayT"></span></button>
+          <button class="memo-link" id="memoDel" style="display:none" onclick="clearMemo()">✕</button>
+        </div>
         <div class="row2">
           <div><label id="ui-fWhenL"></label><input type="datetime-local" id="f-when"></div>
           <div><label id="ui-fRepeatL"></label>
@@ -260,7 +271,7 @@
   </div>
 </div>
 
-<footer><b id="ui-footName">Uyển Nhi</b> · <span id="ui-footText"></span><br><span style="opacity:.6">v12</span></footer>
+<footer><b id="ui-footName">Uyển Nhi</b> · <span id="ui-footText"></span><br><span style="opacity:.6">v13</span></footer>
 
 <script>
 /* ================= I18N ================= */
@@ -273,7 +284,7 @@ vi:{
   listTitle:'Việc của bạn',emptyBig:'💜',empty:'Chưa có việc nào.<br>Thêm việc đầu tiên để Uyển Nhi nhắc bạn nhé!',
   secUpcoming:'Sắp đến / quá hạn',secDone:'Đã hoàn thành',overdue:'quá hạn',bDaily:'mỗi ngày',bWeekly:'mỗi tuần',
   nagTitle:'🔔 Đến giờ rồi — Uyển Nhi nhắc nè!',ackBtn:'Đã nhớ ✓',
-  setTitle:'Cài đặt',setVoice:'Uyển Nhi đọc lời nhắc bằng giọng nói',setSound:'Âm báo khi đến giờ',testBtn:'Thử chuông báo',closeBtn:'Đóng',tabUpcoming:'Sắp tới',tabDone:'Đã xong',editBtn:'Sửa',editTitle:'Sửa lịch hẹn',eSaveBtn:'Lưu lại',delBtn:'Xóa',manageTitle:'Quản lý lịch hẹn',emptyShort:'Chưa có lịch nào.',micHint:'Nói để nhập',micListening:'🎤 Đang nghe... nói xong bấm ⏹ để dừng',micHeard:'✓ Đã hiểu: ',micNoPerm:'Chưa được cấp quyền micro — anh bấm Cho phép rồi thử lại nhé!',micEmpty:'Chưa nghe được gì, anh bấm 🎤 nói lại nhé!',micNoSupport:'Trình duyệt này không hỗ trợ nhập giọng nói, anh dùng Chrome nhé!',micError:'Không nghe rõ, anh nói lại nhé!',
+  setTitle:'Cài đặt',setVoice:'Uyển Nhi đọc lời nhắc bằng giọng nói',setSound:'Âm báo khi đến giờ',testBtn:'Thử chuông báo',closeBtn:'Đóng',tabUpcoming:'Sắp tới',tabDone:'Đã xong',editBtn:'Sửa',editTitle:'Sửa lịch hẹn',eSaveBtn:'Lưu lại',delBtn:'Xóa',manageTitle:'Quản lý lịch hẹn',emptyShort:'Chưa có lịch nào.',micHint:'Nói để nhập',micListening:'🎤 Đang nghe... nói xong bấm ⏹ để dừng',micHeard:'✓ Đã hiểu: ',micNoPerm:'Chưa được cấp quyền micro — anh bấm Cho phép rồi thử lại nhé!',micEmpty:'Chưa nghe được gì, anh bấm 🎤 nói lại nhé!',memoBtn:'Đọc tên việc',memoRec:'⏹ Đang thu... bấm để dừng',memoDone:'✓ Đã thu tên việc',memoPlay:'Nghe thử',memoNoMic:'Không mở được micro, anh kiểm tra quyền nhé!',micNoSupport:'Trình duyệt này không hỗ trợ nhập giọng nói, anh dùng Chrome nhé!',micError:'Không nghe rõ, anh nói lại nhé!',
   permText:'🔔 Bật thông báo để Uyển Nhi nhắc bạn đúng giờ nhé!',permBtn:'Bật thông báo',
   footText:'Trợ lý nhắc việc — dữ liệu lưu riêng tư trên máy của bạn.',
   nPreDayT:'📅 Ngày mai bạn có việc',nPreHourT:'⏰ Sắp đến giờ',nPreHourB:'30 phút nữa: ',
@@ -292,7 +303,7 @@ en:{
   listTitle:'Your tasks',emptyBig:'💜',empty:'No tasks yet.<br>Add your first one!',
   secUpcoming:'Upcoming / overdue',secDone:'Completed',overdue:'overdue',bDaily:'daily',bWeekly:'weekly',
   nagTitle:'🔔 Time\'s up — reminder!',ackBtn:'Got it ✓',
-  setTitle:'Settings',setVoice:'Read reminders aloud with voice',setSound:'Alert sound on time',testBtn:'Test alert',closeBtn:'Close',tabUpcoming:'Upcoming',tabDone:'Done',editBtn:'Edit',editTitle:'Edit reminder',eSaveBtn:'Save',delBtn:'Delete',manageTitle:'Manage reminders',emptyShort:'No reminders yet.',micHint:'Voice input',micListening:'🎤 Listening... tap ⏹ when done',micHeard:'✓ Got it: ',micNoPerm:'Microphone permission denied.',micEmpty:'Did not hear anything, please try again.',micNoSupport:'Voice input is not supported in this browser. Please use Chrome.',micError:'Did not catch that, please try again.',
+  setTitle:'Settings',setVoice:'Read reminders aloud with voice',setSound:'Alert sound on time',testBtn:'Test alert',closeBtn:'Close',tabUpcoming:'Upcoming',tabDone:'Done',editBtn:'Edit',editTitle:'Edit reminder',eSaveBtn:'Save',delBtn:'Delete',manageTitle:'Manage reminders',emptyShort:'No reminders yet.',micHint:'Voice input',micListening:'🎤 Listening... tap ⏹ when done',micHeard:'✓ Got it: ',micNoPerm:'Microphone permission denied.',micEmpty:'Did not hear anything, please try again.',memoBtn:'Record event name',memoRec:'⏹ Recording... tap to stop',memoDone:'✓ Name recorded',memoPlay:'Preview',memoNoMic:'Cannot access microphone.',micNoSupport:'Voice input is not supported in this browser. Please use Chrome.',micError:'Did not catch that, please try again.',
   permText:'🔔 Enable notifications so I can remind you on time!',permBtn:'Enable',
   footText:'Reminder assistant — your data stays private on your device.',
   nPreDayT:'📅 You have tasks tomorrow',nPreHourT:'⏰ Almost time',nPreHourB:'In 30 minutes: ',
@@ -311,7 +322,7 @@ zh:{
   listTitle:'我的任务',emptyBig:'💜',empty:'还没有任务。<br>添加第一个任务吧！',
   secUpcoming:'即将到来 / 已逾期',secDone:'已完成',overdue:'已逾期',bDaily:'每天',bWeekly:'每周',
   nagTitle:'🔔 时间到——婉妮提醒您！',ackBtn:'知道了 ✓',
-  setTitle:'设置',setVoice:'婉妮语音播报提醒',setSound:'整点提示音',testBtn:'测试提示音',closeBtn:'关闭',tabUpcoming:'待办',tabDone:'已完成',editBtn:'编辑',editTitle:'编辑提醒',eSaveBtn:'保存',delBtn:'删除',manageTitle:'管理提醒',emptyShort:'暂无提醒。',micHint:'语音输入',micListening:'🎤 正在聆听...说完按 ⏹ 停止',micHeard:'✓ 已识别：',micNoPerm:'未获得麦克风权限。',micEmpty:'没听到内容，请重试。',micNoSupport:'此浏览器不支持语音输入，请使用 Chrome。',micError:'没听清，请再说一遍！',
+  setTitle:'设置',setVoice:'婉妮语音播报提醒',setSound:'整点提示音',testBtn:'测试提示音',closeBtn:'关闭',tabUpcoming:'待办',tabDone:'已完成',editBtn:'编辑',editTitle:'编辑提醒',eSaveBtn:'保存',delBtn:'删除',manageTitle:'管理提醒',emptyShort:'暂无提醒。',micHint:'语音输入',micListening:'🎤 正在聆听...说完按 ⏹ 停止',micHeard:'✓ 已识别：',micNoPerm:'未获得麦克风权限。',micEmpty:'没听到内容，请重试。',memoBtn:'录下事项名称',memoRec:'⏹ 录音中...按停止',memoDone:'✓ 已录制',memoPlay:'试听',memoNoMic:'无法使用麦克风。',micNoSupport:'此浏览器不支持语音输入，请使用 Chrome。',micError:'没听清，请再说一遍！',
   permText:'🔔 开启通知，让婉妮准时提醒您！',permBtn:'开启通知',
   footText:'提醒助手——数据仅保存在您的设备上。',
   nPreDayT:'📅 您明天有任务',nPreHourT:'⏰ 时间快到了',nPreHourB:'30分钟后：',
@@ -367,6 +378,8 @@ function applyLang(){
   document.getElementById('ui-eSaveBtn').textContent=S.eSaveBtn;
   document.getElementById('ui-manageTitle').textContent=S.manageTitle;
   document.getElementById('micBtn').title=S.micHint;
+  document.getElementById('memoBtnT').textContent=S.memoBtn;
+  document.getElementById('memoPlayT').textContent=S.memoPlay;
   document.getElementById('ui-permText').textContent=S.permText;
   document.getElementById('ui-permBtn').textContent=S.permBtn;
   document.getElementById('ui-footName').textContent=LANG==='zh'?'婉妮':LANG==='en'?'Uyen Nhi':'Uyển Nhi';
@@ -386,7 +399,7 @@ function loadTasks(){try{
   const a=JSON.parse(localStorage.getItem(LS_KEY))||[];
   return a.filter(x=>x&&typeof x==='object').map(x=>({
     id:x.id||Date.now()+Math.random(), title:String(x.title||''), when:Number(x.when)||Date.now(),
-    repeat:['none','daily','weekly'].includes(x.repeat)?x.repeat:'none', note:String(x.note||''),
+    repeat:['none','daily','weekly'].includes(x.repeat)?x.repeat:'none', note:String(x.note||''),memo:typeof x.memo==='string'?x.memo:null,
     done:!!x.done, preDayNotified:!!x.preDayNotified, preHourNotified:!!x.preHourNotified,
     ack:false, lastNag:Number(x.lastNag)||0 }));
 }catch(e){return[]}}
@@ -411,9 +424,10 @@ function addTask(){
   const dt=new Date(when);
   if(dt<=new Date()&&repeat==='none')return alert(t('aPast'));
   tasks.push({id:Date.now(),title:title,when:dt.getTime(),repeat:repeat,note:note,done:false,
-    preDayNotified:false,preHourNotified:false,ack:false,lastNag:0});
+    preDayNotified:false,preHourNotified:false,ack:false,lastNag:0,memo:pendingMemo||null});
   saveTasks();
   document.getElementById('f-title').value='';document.getElementById('f-note').value='';
+  pendingMemo=null;memoUI();
   if('Notification' in window&&Notification.permission==='default')Notification.requestPermission();
   render(); voiceAdd();
 }
@@ -682,15 +696,57 @@ function speakSeq(items){
 function voiceAdd(){speakSeq(['audio/added.mp3']);}
 function voiceAck(){speakSeq(['audio/acked.mp3']);}
 function voiceTest(){speakSeq(['audio/test-ok.mp3']);}
-function voiceNag(){speakSeq(['audio/nag-intro.mp3','audio/nag-outro.mp3']);}
-function voicePreDay(){speakSeq(['audio/preday-intro.mp3']);}
-function voicePreHour(){speakSeq(['audio/prehour-intro.mp3']);}
+function withMemo(memo,intro,outro){
+  const seq=[intro]; if(memo)seq.push(memo); if(outro)seq.push(outro); return seq;
+}
+function voiceNag(memo){speakSeq(withMemo(memo,'audio/nag-intro.mp3','audio/nag-outro.mp3'));}
+function voicePreDay(memo){speakSeq(withMemo(memo,'audio/preday-intro.mp3',null));}
+function voicePreHour(memo){speakSeq(withMemo(memo,'audio/prehour-intro.mp3',null));}
 function testNotify(){
   beep();voiceTest();
   if('Notification' in window&&Notification.permission==='granted')
     new Notification(t('nTestT'),{body:t('nTestB'),icon:'avatar.png'});
   else askPermission();
 }
+/* ---- Thu tên sự kiện bằng giọng anh, phát kèm khi Uyển Nhi nhắc ---- */
+let memoRecorder=null, memoChunks=[], memoStream=null, pendingMemo=null, memoTimer=null;
+function memoUI(){
+  const rec=memoRecorder&&memoRecorder.state==='recording';
+  document.getElementById('memoBtn').classList.toggle('rec',!!rec);
+  document.getElementById('memoBtnT').textContent=rec?t('memoRec'):t('memoBtn');
+  document.getElementById('memoPlay').style.display=pendingMemo?'':'none';
+  document.getElementById('memoDel').style.display=pendingMemo?'':'none';
+  if(!pendingMemo&&!rec)document.getElementById('memoStatus').textContent='';
+}
+async function toggleMemoRec(){
+  if(memoRecorder&&memoRecorder.state==='recording'){stopMemoRec();return;}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){alert(t('memoNoMic'));return;}
+  try{ memoStream=await navigator.mediaDevices.getUserMedia({audio:true}); }
+  catch(e){ alert(t('memoNoMic')); return; }
+  memoChunks=[];
+  try{ memoRecorder=new MediaRecorder(memoStream); }
+  catch(e){ alert(t('memoNoMic')); return; }
+  memoRecorder.ondataavailable=function(e){ if(e.data&&e.data.size)memoChunks.push(e.data); };
+  memoRecorder.onstop=function(){
+    const blob=new Blob(memoChunks,{type:memoRecorder.mimeType||'audio/webm'});
+    const rd=new FileReader();
+    rd.onload=function(){ pendingMemo=rd.result; memoUI();
+      document.getElementById('memoStatus').textContent=t('memoDone'); };
+    rd.readAsDataURL(blob);
+    if(memoStream)memoStream.getTracks().forEach(function(tr){tr.stop();});
+    memoStream=null;
+  };
+  memoRecorder.start(); memoUI();
+  clearTimeout(memoTimer);
+  memoTimer=setTimeout(function(){ if(memoRecorder&&memoRecorder.state==='recording')stopMemoRec(); },8000);
+}
+function stopMemoRec(){
+  clearTimeout(memoTimer);
+  try{ if(memoRecorder&&memoRecorder.state!=='inactive')memoRecorder.stop(); }catch(e){}
+}
+function playMemoPreview(){ if(pendingMemo)playAudio(pendingMemo); }
+function clearMemo(){ pendingMemo=null; memoUI(); }
+
 /* Mở khóa âm thanh ngay lần chạm đầu tiên (trình duyệt chặn tiếng nếu chưa tương tác) */
 let audioUnlocked=false;
 function unlockAudio(){
@@ -735,16 +791,16 @@ function checkReminders(){
     if(!x.preDayNotified&&now>=eve.getTime()&&now<x.when-3600000){
       x.preDayNotified=true;changed=true;
       notify(t('nPreDayT'),x.title+' · '+fmtTime(x.when)+(x.note?'\n'+x.note:''),'preday-'+x.id);
-      voicePreDay();
+      voicePreDay(x.memo||null);
     }
     if(!x.preHourNotified&&now>=x.when-1800000&&now<x.when){
       x.preHourNotified=true;changed=true;
       notify(t('nPreHourT'),t('nPreHourB')+x.title,'prehour-'+x.id);
-      voicePreHour();
+      voicePreHour(x.memo||null);
     }
     if(now>=x.when-300000&&now-(x.lastNag||0)>=60000){
       x.lastNag=now;changed=true;
-      beep();voiceNag();
+      beep();voiceNag(x.memo||null);
       if('Notification' in window&&Notification.permission==='granted')
         new Notification(t('nNagT'),{body:x.title+(x.note?'\n'+x.note:''),icon:'avatar.png',tag:'nag-'+x.id,requireInteraction:true});
     }
