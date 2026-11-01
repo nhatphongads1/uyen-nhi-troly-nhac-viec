@@ -4,304 +4,370 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Uyển Nhi — Trợ lý nhắc việc</title>
-<meta name="theme-color" content="#4C1D95">
+<meta name="theme-color" content="#D21F2B">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="avatar.png">
 <style>
-  @font-face{font-family:'Playfair Display';src:url('fonts/playfair.woff2') format('woff2');font-display:swap;}
   :root{
-    --ivory:#FAF7F1; --card:#FFFDF9; --ink:#2B2440; --muted:#8F86A0;
-    --royal:#4C1D95; --royal-2:#6D28D9; --gold:#C6A15B; --gold-soft:#F4EBD6;
-    --line:#EDE4D3; --green:#1E7E4D; --red:#B91C1C;
-    --shadow:0 10px 34px rgba(76,29,149,.10);
-    --serif:'Playfair Display',Georgia,'Times New Roman',serif;
-    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --red:#D21F2B; --red-dark:#A81620; --red-soft:#FDECEC;
+    --ink:#1F1B2D; --muted:#8A8A93; --bg:#F6F6F8; --card:#FFFFFF;
+    --gold:#C6A15B; --gold-soft:#F7F0DE; --line:#ECECF0;
+    --green:#1E7E4D; --amber:#B7791F;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC","Helvetica Neue",Arial,sans-serif;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  body{margin:0;font-family:var(--sans);background:var(--ivory);color:var(--ink);
-    min-height:100vh;padding-bottom:80px;
-    background-image:radial-gradient(1200px 500px at 50% -10%,#F1E8F9 0%,var(--ivory) 60%);}
+  html{-webkit-text-size-adjust:100%;}
+  body{margin:0;font-family:var(--sans);background:var(--bg);color:var(--ink);
+    min-height:100vh;padding-bottom:70px;line-height:1.5;}
+  html[lang="zh"] body{line-height:1.6;}
   /* ---------- Header ---------- */
-  header{background:linear-gradient(150deg,#3B1470 0%,var(--royal) 55%,#5E2BB8 100%);
-    color:#fff;padding:34px 22px 26px;border-radius:0 0 32px 32px;
-    box-shadow:0 12px 40px rgba(76,29,149,.28);position:relative;overflow:hidden;}
-  header::after{content:'';position:absolute;left:22px;right:22px;bottom:14px;height:1px;
-    background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.7;}
-  .head-row{display:flex;align-items:center;gap:16px;}
-  .avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;flex-shrink:0;
-    border:2px solid var(--gold);padding:2px;background:#fff;
-    box-shadow:0 4px 18px rgba(0,0,0,.3);}
-  .brand-eyebrow{font-size:11px;letter-spacing:3px;color:var(--gold);font-weight:700;margin:0 0 4px;}
-  .head-row h1{margin:0;font-family:var(--serif);font-size:27px;font-weight:700;letter-spacing:.5px;}
-  .head-row p{margin:5px 0 0;opacity:.92;font-size:13.5px;font-weight:400;}
-  .stats{display:flex;margin-top:20px;background:rgba(255,255,255,.10);
-    border:1px solid rgba(198,161,91,.45);border-radius:18px;overflow:hidden;backdrop-filter:blur(6px);}
-  .stat{flex:1;text-align:center;padding:13px 6px;position:relative;}
-  .stat+.stat::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:1px;
-    background:rgba(198,161,91,.4);}
-  .stat b{display:block;font-family:var(--serif);font-size:26px;color:#fff;}
-  .stat span{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:#E9DCC3;opacity:.95;}
+  header{background:#fff;border-bottom:1px solid var(--line);padding:18px 16px 14px;
+    position:sticky;top:0;z-index:50;}
+  .head-top{display:flex;align-items:center;gap:12px;max-width:1100px;margin:0 auto;}
+  .avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;flex-shrink:0;
+    border:2px solid var(--red);padding:1px;background:#fff;}
+  .head-main{flex:1;min-width:0;}
+  .pill{display:inline-block;background:var(--red);color:#fff;font-size:11px;font-weight:800;
+    letter-spacing:1.5px;padding:4px 12px;border-radius:20px;margin-bottom:5px;}
+  html[lang="zh"] .pill{letter-spacing:2px;}
+  .head-main h1{margin:0;font-size:24px;font-weight:900;letter-spacing:.3px;line-height:1.2;}
+  .head-main h1 .accent{color:var(--red);}
+  .head-main p{margin:3px 0 0;font-size:13px;color:var(--muted);}
+  .lang-sw{display:flex;gap:4px;flex-shrink:0;background:var(--bg);border-radius:12px;padding:3px;}
+  .lang-sw button{border:none;background:transparent;padding:7px 10px;border-radius:9px;
+    font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;font-family:var(--sans);}
+  .lang-sw button.on{background:var(--ink);color:#fff;}
+  .stats{display:flex;gap:10px;max-width:1100px;margin:12px auto 0;}
+  .stat{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:14px;
+    padding:10px 6px;text-align:center;position:relative;overflow:hidden;}
+  .stat b{display:block;font-size:24px;font-weight:900;color:var(--red);line-height:1.15;}
+  .stat span{font-size:11px;color:var(--muted);font-weight:600;}
+  .stat.hot::after{content:'';position:absolute;top:8px;right:8px;width:8px;height:8px;
+    border-radius:50%;background:var(--red);display:none;}
+  .stat.hot.show::after{display:block;}
   /* ---------- Layout ---------- */
-  main{max-width:580px;margin:0 auto;padding:18px 16px;}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:22px;
-    box-shadow:var(--shadow);padding:20px;margin-bottom:16px;}
-  .card-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
-  .card-head h2{margin:0;font-family:var(--serif);font-size:19px;color:var(--royal);font-weight:700;}
-  .card-head .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent);}
-  label{display:block;font-size:12px;letter-spacing:1px;text-transform:uppercase;
-    color:var(--muted);margin:14px 0 6px;font-weight:600;}
+  main{max-width:1100px;margin:0 auto;padding:14px 14px;}
+  .cols{display:grid;grid-template-columns:1fr;gap:14px;}
+  @media(min-width:960px){.cols{grid-template-columns:380px 1fr;align-items:start;}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:18px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.04);}
+  .card h2{margin:0 0 4px;font-size:17px;font-weight:800;}
+  .card h2 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;
+    background:var(--red);margin-right:8px;vertical-align:2px;}
+  label{display:block;font-size:12px;color:var(--muted);margin:12px 0 5px;font-weight:700;}
   input[type=text],input[type=datetime-local],select{
-    width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:14px;font-size:16px;
-    background:#fff;color:var(--ink);outline:none;font-family:var(--sans);transition:border-color .2s, box-shadow .2s;}
-  input:focus,select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(198,161,91,.18);}
+    width:100%;padding:13px 12px;border:1.5px solid var(--line);border-radius:12px;font-size:16px;
+    background:#fff;color:var(--ink);outline:none;font-family:var(--sans);}
+  input:focus,select:focus{border-color:var(--red);}
   .row2{display:flex;gap:10px;}
   .row2>div{flex:1;min-width:0;}
-  .btn{display:block;width:100%;padding:15px;margin-top:18px;border:none;border-radius:16px;cursor:pointer;
-    background:linear-gradient(135deg,#D9B96A,var(--gold) 45%,#A8823F);color:#3A2A10;
-    font-size:16px;font-weight:800;letter-spacing:.6px;
-    box-shadow:0 8px 22px rgba(198,161,91,.4),inset 0 1px 0 rgba(255,255,255,.5);}
-  .btn:active{transform:scale(.98);}
-  .btn-ghost{background:transparent;color:var(--royal);border:1.5px solid var(--royal);box-shadow:none;
-    font-weight:700;}
+  .btn{display:block;width:100%;padding:15px;margin-top:16px;border:none;border-radius:14px;cursor:pointer;
+    background:var(--red);color:#fff;font-size:17px;font-weight:800;letter-spacing:.5px;
+    box-shadow:0 8px 20px rgba(210,31,43,.3);}
+  .btn:active{transform:scale(.98);background:var(--red-dark);}
+  .btn-ghost{background:#fff;color:var(--red);border:1.5px solid var(--red);box-shadow:none;font-size:15px;}
   /* ---------- Tasks ---------- */
-  .section-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;
-    letter-spacing:1.6px;margin:20px 4px 10px;display:flex;align-items:center;gap:8px;}
-  .section-title::after{content:'';flex:1;height:1px;background:var(--line);}
-  .task{display:flex;align-items:flex-start;gap:13px;padding:14px;border-radius:16px;
-    border:1px solid var(--line);margin-bottom:10px;background:#fff;transition:box-shadow .2s;}
-  .task:active{box-shadow:var(--shadow);}
+  .section-title{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:1px;
+    margin:16px 2px 8px;text-transform:uppercase;}
+  .task{display:flex;align-items:flex-start;gap:11px;padding:13px 12px;border-radius:12px;
+    background:#fff;border:1px solid var(--line);margin-bottom:8px;position:relative;overflow:hidden;}
+  .task::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold);}
+  .task.overdue::before{background:var(--red);}
   .task.done{opacity:.5;}
+  .task.done::before{background:#D8D8DE;}
   .task.done .t-title{text-decoration:line-through;}
-  .task.overdue{border-color:#F3C1C1;background:#FDF6F6;}
-  .check{width:28px;height:28px;border-radius:50%;border:1.8px solid var(--gold);flex-shrink:0;
+  .check{width:26px;height:26px;border-radius:50%;border:2px solid #C9C9D2;flex-shrink:0;
     margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;
-    color:#fff;font-size:14px;background:#fff;transition:all .2s;}
+    color:#fff;font-size:13px;background:#fff;}
   .task.done .check{background:var(--green);border-color:var(--green);}
   .t-body{flex:1;min-width:0;}
-  .t-title{font-weight:600;font-size:15.5px;line-height:1.45;}
-  .t-meta{font-size:13px;color:var(--muted);margin-top:5px;}
-  .t-time{font-weight:700;color:var(--royal);}
+  .t-title{font-weight:700;font-size:15px;line-height:1.45;word-break:break-word;}
+  .t-meta{font-size:12.5px;color:var(--muted);margin-top:4px;}
+  .t-time{font-weight:800;color:var(--ink);}
   .task.overdue .t-time{color:var(--red);}
   .t-actions{flex-shrink:0;}
-  .icon-btn{border:1px solid var(--line);background:var(--ivory);color:var(--muted);
-    width:36px;height:36px;border-radius:12px;font-size:16px;cursor:pointer;}
-  .icon-btn.del{color:var(--red);border-color:#F3C1C1;background:#FDF6F6;}
-  .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;
-    margin-left:6px;vertical-align:2px;letter-spacing:.4px;}
-  .badge-repeat{background:var(--gold-soft);color:#8A6A2B;}
-  .badge-late{background:#FDE8E8;color:var(--red);}
-  .empty{text-align:center;color:var(--muted);padding:34px 12px;font-size:14.5px;line-height:1.7;}
-  .empty .big{font-size:44px;display:block;margin-bottom:10px;}
-  /* ---------- Nag banner ---------- */
-  .nag-banner{background:linear-gradient(135deg,#FFF7F7,#FDECEC);border:1.5px solid #E8A0A0;
-    border-radius:20px;box-shadow:0 10px 30px rgba(185,28,28,.14);padding:16px;margin-bottom:6px;
+  .icon-btn{border:1px solid var(--line);background:#fff;color:var(--muted);
+    width:34px;height:34px;border-radius:10px;font-size:15px;cursor:pointer;}
+  .icon-btn.del{color:var(--red);}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;
+    margin-left:6px;vertical-align:1px;background:var(--gold-soft);color:#8A6A2B;}
+  .badge.late{background:var(--red);color:#fff;}
+  .empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:14px;line-height:1.7;}
+  .empty .big{font-size:42px;display:block;margin-bottom:8px;}
+  /* ---------- Nag ---------- */
+  .nag-banner{background:#fff;border:2px solid var(--red);border-radius:16px;
+    padding:14px;margin-bottom:12px;box-shadow:0 8px 24px rgba(210,31,43,.16);
     animation:pulse 1.8s infinite;}
-  @keyframes pulse{0%,100%{box-shadow:0 10px 30px rgba(185,28,28,.12);}50%{box-shadow:0 10px 34px rgba(185,28,28,.3);}}
-  .nag-title{font-family:var(--serif);font-weight:700;color:var(--red);font-size:17px;margin-bottom:6px;}
+  @keyframes pulse{0%,100%{box-shadow:0 8px 24px rgba(210,31,43,.14);}50%{box-shadow:0 8px 30px rgba(210,31,43,.32);}}
+  .nag-title{font-weight:900;color:var(--red);font-size:16px;margin-bottom:4px;}
   .nag-item{display:flex;align-items:center;justify-content:space-between;gap:10px;
-    background:#fff;border:1px solid #F3C1C1;border-radius:12px;padding:10px 12px;margin-top:8px;}
-  .nag-item span{font-weight:600;font-size:14px;}
-  .btn-ack{border:none;background:linear-gradient(135deg,#22A35C,var(--green));color:#fff;font-weight:800;
-    font-size:14px;padding:11px 20px;border-radius:12px;cursor:pointer;flex-shrink:0;
-    box-shadow:0 6px 16px rgba(30,126,77,.35);}
+    background:var(--red-soft);border-radius:10px;padding:9px 11px;margin-top:8px;}
+  .nag-item span{font-weight:700;font-size:14px;}
+  .btn-ack{border:none;background:var(--green);color:#fff;font-weight:800;font-size:14px;
+    padding:10px 18px;border-radius:10px;cursor:pointer;flex-shrink:0;white-space:nowrap;}
   .btn-ack:active{transform:scale(.95);}
   /* ---------- Misc ---------- */
-  .perm-banner{background:#FFFBEB;border:1.5px solid var(--gold);border-radius:16px;padding:14px;
-    font-size:14px;margin-bottom:16px;display:none;line-height:1.6;}
+  .perm-banner{background:#FFF8E6;border:1.5px solid var(--gold);border-radius:14px;padding:13px;
+    font-size:14px;margin-bottom:14px;display:none;line-height:1.6;}
   .perm-banner.show{display:block;}
-  .perm-banner button{margin-top:10px;padding:11px 20px;border:none;border-radius:12px;cursor:pointer;
-    background:linear-gradient(135deg,#D9B96A,var(--gold));color:#3A2A10;font-weight:800;font-size:14px;}
-  .setting-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);
-    cursor:pointer;font-size:15px;}
+  .perm-banner button{margin-top:10px;padding:11px 22px;border:none;border-radius:12px;cursor:pointer;
+    background:var(--red);color:#fff;font-weight:800;font-size:14px;}
+  .setting-row{display:flex;align-items:center;gap:11px;padding:11px 0;
+    border-bottom:1px solid var(--line);cursor:pointer;font-size:15px;}
   .setting-row:last-of-type{border-bottom:none;}
-  .setting-row input{width:22px;height:22px;accent-color:var(--royal);}
-  footer{text-align:center;color:var(--muted);font-size:12px;padding:26px 16px;line-height:1.8;}
-  footer .sig{font-family:var(--serif);color:var(--gold);font-size:15px;letter-spacing:1px;}
+  .setting-row input{width:21px;height:21px;accent-color:var(--red);flex-shrink:0;}
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:24px 14px;line-height:1.8;}
+  footer b{color:var(--red);}
 </style>
 </head>
 <body>
 <header>
-  <div class="head-row">
-    <img class="avatar" src="avatar.png" alt="Uyển Nhi">
-    <div>
-      <p class="brand-eyebrow">TRỢ LÝ CÁ NHÂN</p>
-      <h1>Uyển Nhi</h1>
-      <p id="greeting">Trợ lý nhắc việc của bạn</p>
+  <div class="head-top">
+    <img class="avatar" src="avatar.png" alt="Uyen Nhi">
+    <div class="head-main">
+      <span class="pill" id="ui-badge">TRỢ LÝ AI</span>
+      <h1 id="ui-title">Uyển <span class="accent">Nhi</span></h1>
+      <p id="greeting"></p>
+    </div>
+    <div class="lang-sw" id="langSw">
+      <button data-lang="vi" class="on">VI</button><button data-lang="en">EN</button><button data-lang="zh">中文</button>
     </div>
   </div>
   <div class="stats">
-    <div class="stat"><b id="st-today">0</b><span>Hôm nay</span></div>
-    <div class="stat"><b id="st-pending">0</b><span>Chưa xong</span></div>
-    <div class="stat"><b id="st-done">0</b><span>Đã xong</span></div>
+    <div class="stat"><b id="st-today">0</b><span id="ui-stToday">Hôm nay</span></div>
+    <div class="stat" id="statPending"><b id="st-pending">0</b><span id="ui-stPending">Chưa xong</span></div>
+    <div class="stat"><b id="st-done">0</b><span id="ui-stDone">Đã xong</span></div>
   </div>
 </header>
 
 <main>
   <div class="perm-banner" id="permBanner">
-    🔔 <b>Bật thông báo</b> để Uyển Nhi nhắc bạn đúng giờ, dù đang bận rộn nhé!
-    <br><button onclick="askPermission()">Bật thông báo</button>
+    <span id="ui-permText"></span><br><button onclick="askPermission()" id="ui-permBtn"></button>
   </div>
-
-  <div class="card">
-    <div class="card-head"><h2>Thêm việc cần nhắc</h2><div class="rule"></div></div>
-    <label>Việc gì?</label>
-    <input type="text" id="f-title" placeholder="VD: Uống thuốc, họp tổ chuyên môn..." maxlength="120">
-    <div class="row2">
-      <div>
-        <label>Ngày giờ nhắc</label>
-        <input type="datetime-local" id="f-when">
+  <div class="cols">
+    <div>
+      <div class="card">
+        <h2><span class="dot"></span><span id="ui-addTitle"></span></h2>
+        <label id="ui-fWhatL"></label>
+        <input type="text" id="f-title" maxlength="120">
+        <div class="row2">
+          <div><label id="ui-fWhenL"></label><input type="datetime-local" id="f-when"></div>
+          <div><label id="ui-fRepeatL"></label>
+            <select id="f-repeat">
+              <option value="none" id="ui-rOnce"></option>
+              <option value="daily" id="ui-rDaily"></option>
+              <option value="weekly" id="ui-rWeekly"></option>
+            </select>
+          </div>
+        </div>
+        <label id="ui-fNoteL"></label>
+        <input type="text" id="f-note" maxlength="200">
+        <button class="btn" onclick="addTask()" id="ui-addBtn"></button>
       </div>
-      <div>
-        <label>Lặp lại</label>
-        <select id="f-repeat">
-          <option value="none">Một lần</option>
-          <option value="daily">Mỗi ngày</option>
-          <option value="weekly">Mỗi tuần</option>
-        </select>
+      <div class="card">
+        <h2><span class="dot"></span><span id="ui-setTitle"></span></h2>
+        <label class="setting-row"><input type="checkbox" id="set-voice" checked><span id="ui-setVoice"></span></label>
+        <label class="setting-row"><input type="checkbox" id="set-sound" checked><span id="ui-setSound"></span></label>
+        <button class="btn btn-ghost" onclick="testNotify()" id="ui-testBtn"></button>
       </div>
     </div>
-    <label>Ghi chú</label>
-    <input type="text" id="f-note" placeholder="Không bắt buộc — VD: Mang theo sổ..." maxlength="200">
-    <button class="btn" onclick="addTask()">✦ &nbsp;Nhắc tôi nhé&nbsp; ✦</button>
-  </div>
-
-  <div class="card">
-    <div class="card-head"><h2>Việc của bạn</h2><div class="rule"></div></div>
-    <div id="taskList"></div>
-  </div>
-
-  <div class="card">
-    <div class="card-head"><h2>Cài đặt</h2><div class="rule"></div></div>
-    <label class="setting-row"><input type="checkbox" id="set-voice" checked> Uyển Nhi đọc lời nhắc bằng giọng nói</label>
-    <label class="setting-row"><input type="checkbox" id="set-sound" checked> Âm báo khi đến giờ</label>
-    <button class="btn btn-ghost" onclick="testNotify()">🔔 Thử chuông báo</button>
+    <div>
+      <div class="card">
+        <h2><span class="dot"></span><span id="ui-listTitle"></span></h2>
+        <div id="taskList"></div>
+      </div>
+    </div>
   </div>
 </main>
 
-<footer>
-  <div class="sig">✦ Uyển Nhi ✦</div>
-  Trợ lý nhắc việc — dữ liệu lưu riêng tư trên máy của bạn.
-</footer>
+<footer><b id="ui-footName">Uyển Nhi</b> · <span id="ui-footText"></span></footer>
 
 <script>
+/* ================= I18N ================= */
+const I18N={
+vi:{
+  badge:'TRỢ LÝ AI',greet:['Chúc ngủ ngon 🌙','Chào buổi sáng ☀️','Chào buổi trưa 🍱','Chào buổi chiều 🌤️','Chào buổi tối 🌙'],
+  stToday:'Hôm nay',stPending:'Chưa xong',stDone:'Đã xong',
+  addTitle:'Thêm việc cần nhắc',fWhat:'Việc gì?',fWhatPh:'VD: Uống thuốc, họp tổ...',fWhen:'Ngày giờ',fRepeat:'Lặp lại',
+  rOnce:'Một lần',rDaily:'Mỗi ngày',rWeekly:'Mỗi tuần',fNote:'Ghi chú',fNotePh:'Không bắt buộc...',addBtn:'🔔 Nhắc tôi nhé',
+  listTitle:'Việc của bạn',emptyBig:'💜',empty:'Chưa có việc nào.<br>Thêm việc đầu tiên để Uyển Nhi nhắc bạn nhé!',
+  secUpcoming:'Sắp đến / quá hạn',secDone:'Đã hoàn thành',overdue:'quá hạn',bDaily:'mỗi ngày',bWeekly:'mỗi tuần',
+  nagTitle:'🔔 Đến giờ rồi — Uyển Nhi nhắc nè!',ackBtn:'Đã nhớ ✓',
+  setTitle:'Cài đặt',setVoice:'Uyển Nhi đọc lời nhắc bằng giọng nói',setSound:'Âm báo khi đến giờ',testBtn:'Thử chuông báo',
+  permText:'🔔 Bật thông báo để Uyển Nhi nhắc bạn đúng giờ nhé!',permBtn:'Bật thông báo',
+  footText:'Trợ lý nhắc việc — dữ liệu lưu riêng tư trên máy của bạn.',
+  nPreDayT:'📅 Ngày mai bạn có việc',nPreHourT:'⏰ Sắp đến giờ',nPreHourB:'30 phút nữa: ',
+  nNagT:'🔔 Uyển Nhi nhắc lại!',nNagSp:'Nhắc lại! {t}. Bạn bấm nút đã nhớ để Uyển Nhi dừng nhắc nhé.',
+  nAddSp:'Đã ghi nhớ! Uyển Nhi sẽ nhắc bạn {t}',nAckSp:'Tuyệt vời! Uyển Nhi dừng nhắc nhé.',
+  nTestSp:'Chuông báo hoạt động tốt! Uyển Nhi sẽ nhắc bạn đúng giờ.',nTestT:'Uyển Nhi 💜',nTestB:'Thử chuông báo thành công!',
+  aNoTitle:'Bạn ơi, nhập tên việc cần nhắc nhé!',aNoWhen:'Chọn ngày giờ nhắc nhé!',aPast:'Giờ nhắc phải ở tương lai nhé!',
+  cDel:'Xóa việc này nhé?',aNoNotif:'Trình duyệt này không hỗ trợ thông báo.',aBlocked:'Bạn đã chặn thông báo — vào cài đặt trình duyệt để bật lại nhé.',
+  locale:'vi-VN',spLang:'vi-VN'
+},
+en:{
+  badge:'AI ASSISTANT',greet:['Good night 🌙','Good morning ☀️','Good afternoon 🍱','Good afternoon 🌤️','Good evening 🌙'],
+  stToday:'Today',stPending:'Pending',stDone:'Done',
+  addTitle:'Add reminder',fWhat:'Task',fWhatPh:'e.g. Take medicine, meeting...',fWhen:'Date & time',fRepeat:'Repeat',
+  rOnce:'Once',rDaily:'Daily',rWeekly:'Weekly',fNote:'Note',fNotePh:'Optional...',addBtn:'🔔 Remind me',
+  listTitle:'Your tasks',emptyBig:'💜',empty:'No tasks yet.<br>Add your first one!',
+  secUpcoming:'Upcoming / overdue',secDone:'Completed',overdue:'overdue',bDaily:'daily',bWeekly:'weekly',
+  nagTitle:'🔔 Time\'s up — reminder!',ackBtn:'Got it ✓',
+  setTitle:'Settings',setVoice:'Read reminders aloud with voice',setSound:'Alert sound on time',testBtn:'Test alert',
+  permText:'🔔 Enable notifications so I can remind you on time!',permBtn:'Enable',
+  footText:'Reminder assistant — your data stays private on your device.',
+  nPreDayT:'📅 You have tasks tomorrow',nPreHourT:'⏰ Almost time',nPreHourB:'In 30 minutes: ',
+  nNagT:'🔔 Reminder again!',nNagSp:'Reminder! {t}. Tap Got it to stop.',
+  nAddSp:'Saved! I will remind you: {t}',nAckSp:'Great! I will stop reminding.',
+  nTestSp:'Alert works! I will remind you on time.',nTestT:'Uyen Nhi 💜',nTestB:'Test alert successful!',
+  aNoTitle:'Please enter the task name!',aNoWhen:'Please pick date & time!',aPast:'Time must be in the future!',
+  cDel:'Delete this task?',aNoNotif:'This browser does not support notifications.',aBlocked:'Notifications blocked — enable them in browser settings.',
+  locale:'en-US',spLang:'en-US'
+},
+zh:{
+  badge:'AI 助手',greet:['晚安 🌙','早上好 ☀️','中午好 🍱','下午好 🌤️','晚上好 🌙'],
+  stToday:'今天',stPending:'待办',stDone:'已完成',
+  addTitle:'添加提醒',fWhat:'事项',fWhatPh:'例如：吃药、开会...',fWhen:'时间',fRepeat:'重复',
+  rOnce:'一次',rDaily:'每天',rWeekly:'每周',fNote:'备注',fNotePh:'选填...',addBtn:'🔔 提醒我',
+  listTitle:'我的任务',emptyBig:'💜',empty:'还没有任务。<br>添加第一个任务吧！',
+  secUpcoming:'即将到来 / 已逾期',secDone:'已完成',overdue:'已逾期',bDaily:'每天',bWeekly:'每周',
+  nagTitle:'🔔 时间到——婉妮提醒您！',ackBtn:'知道了 ✓',
+  setTitle:'设置',setVoice:'婉妮语音播报提醒',setSound:'整点提示音',testBtn:'测试提示音',
+  permText:'🔔 开启通知，让婉妮准时提醒您！',permBtn:'开启通知',
+  footText:'提醒助手——数据仅保存在您的设备上。',
+  nPreDayT:'📅 您明天有任务',nPreHourT:'⏰ 时间快到了',nPreHourB:'30分钟后：',
+  nNagT:'🔔 婉妮再次提醒！',nNagSp:'再提醒一次！{t}。请点击"知道了"停止提醒。',
+  nAddSp:'已记住！婉妮会提醒您：{t}',nAckSp:'太好了！婉妮停止提醒。',
+  nTestSp:'提示音正常！婉妮会准时提醒您。',nTestT:'婉妮 💜',nTestB:'测试提示音成功！',
+  aNoTitle:'请输入任务名称！',aNoWhen:'请选择日期时间！',aPast:'时间必须是将来的！',
+  cDel:'删除这个任务吗？',aNoNotif:'此浏览器不支持通知。',aBlocked:'通知已被屏蔽——请在浏览器设置中开启。',
+  locale:'zh-CN',spLang:'zh-CN'
+}};
+let LANG=localStorage.getItem('uyennhi_lang')||'vi';
+function t(k){return (I18N[LANG]&&I18N[LANG][k])||I18N.vi[k]||k;}
+function applyLang(){
+  const S=I18N[LANG];
+  document.documentElement.lang=LANG==='zh'?'zh-CN':LANG;
+  document.title=(LANG==='vi'?'Uyển Nhi — Trợ lý nhắc việc':LANG==='en'?'Uyen Nhi — Reminder Assistant':'婉妮 — 提醒助手');
+  document.getElementById('ui-badge').textContent=S.badge;
+  document.getElementById('ui-title').innerHTML=(LANG==='vi'?'Uyển <span class="accent">Nhi</span>':LANG==='en'?'Uyen <span class="accent">Nhi</span>':'婉<span class="accent">妮</span>');
+  const h=new Date().getHours();
+  const gi=h<5?0:h<11?1:h<13?2:h<18?3:4;
+  document.getElementById('greeting').textContent=S.greet[gi];
+  document.getElementById('ui-stToday').textContent=S.stToday;
+  document.getElementById('ui-stPending').textContent=S.stPending;
+  document.getElementById('ui-stDone').textContent=S.stDone;
+  document.getElementById('ui-addTitle').textContent=S.addTitle;
+  document.getElementById('ui-fWhatL').textContent=S.fWhat;
+  document.getElementById('f-title').placeholder=S.fWhatPh;
+  document.getElementById('ui-fWhenL').textContent=S.fWhen;
+  document.getElementById('ui-fRepeatL').textContent=S.fRepeat;
+  document.getElementById('ui-rOnce').textContent=S.rOnce;
+  document.getElementById('ui-rDaily').textContent=S.rDaily;
+  document.getElementById('ui-rWeekly').textContent=S.rWeekly;
+  document.getElementById('ui-fNoteL').textContent=S.fNote;
+  document.getElementById('f-note').placeholder=S.fNotePh;
+  document.getElementById('ui-addBtn').textContent=S.addBtn;
+  document.getElementById('ui-listTitle').textContent=S.listTitle;
+  document.getElementById('ui-setTitle').textContent=S.setTitle;
+  document.getElementById('ui-setVoice').textContent=S.setVoice;
+  document.getElementById('ui-setSound').textContent=S.setSound;
+  document.getElementById('ui-testBtn').textContent='🔔 '+S.testBtn;
+  document.getElementById('ui-permText').textContent=S.permText;
+  document.getElementById('ui-permBtn').textContent=S.permBtn;
+  document.getElementById('ui-footName').textContent=LANG==='zh'?'婉妮':LANG==='en'?'Uyen Nhi':'Uyển Nhi';
+  document.getElementById('ui-footText').textContent=S.footText;
+  document.querySelectorAll('#langSw button').forEach(b=>b.classList.toggle('on',b.dataset.lang===LANG));
+  render();
+}
+document.getElementById('langSw').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  LANG=b.dataset.lang; localStorage.setItem('uyennhi_lang',LANG); applyLang();
+});
 
+/* ================= APP LOGIC ================= */
 const LS_KEY='uyennhi_reminders_v1', SET_KEY='uyennhi_reminder_settings';
 let tasks=loadTasks(), settings=loadSettings();
-
-function loadTasks(){ try{return JSON.parse(localStorage.getItem(LS_KEY))||[]}catch(e){return[]} }
-function saveTasks(){ localStorage.setItem(LS_KEY,JSON.stringify(tasks)); }
-function loadSettings(){ try{return Object.assign({voice:true,sound:true},JSON.parse(localStorage.getItem(SET_KEY))||{})}catch(e){return{voice:true,sound:true}} }
-function saveSettings(){ localStorage.setItem(SET_KEY,JSON.stringify(settings)); }
-
-// Greeting
-(function(){
-  const h=new Date().getHours();
-  const g=h<5?'Chúc bạn ngủ ngon 🌙':h<11?'Chào buổi sáng ☀️':h<13?'Chào buổi trưa 🍱':h<18?'Chào buổi chiều 🌤️':'Chào buổi tối 🌙';
-  document.getElementById('greeting').textContent=g+' — Uyển Nhi nhắc việc giúp bạn';
-  document.getElementById('set-voice').checked=settings.voice;
-  document.getElementById('set-sound').checked=settings.sound;
-  document.getElementById('set-voice').onchange=e=>{settings.voice=e.target.checked;saveSettings()};
-  document.getElementById('set-sound').onchange=e=>{settings.sound=e.target.checked;saveSettings()};
-  if('Notification' in window && Notification.permission==='default')
-    document.getElementById('permBanner').classList.add('show');
-})();
+function loadTasks(){try{return JSON.parse(localStorage.getItem(LS_KEY))||[]}catch(e){return[]}}
+function saveTasks(){localStorage.setItem(LS_KEY,JSON.stringify(tasks));}
+function loadSettings(){try{return Object.assign({voice:true,sound:true},JSON.parse(localStorage.getItem(SET_KEY))||{})}catch(e){return{voice:true,sound:true}}}
+function saveSettings(){localStorage.setItem(SET_KEY,JSON.stringify(settings));}
 
 function askPermission(){
-  if(!('Notification' in window)) return alert('Trình duyệt này không hỗ trợ thông báo.');
+  if(!('Notification' in window))return alert(t('aNoNotif'));
   Notification.requestPermission().then(p=>{
-    if(p==='granted') document.getElementById('permBanner').classList.remove('show');
-    else alert('Bạn đã chặn thông báo — vào cài đặt trình duyệt để bật lại nhé.');
+    if(p==='granted')document.getElementById('permBanner').classList.remove('show');
+    else alert(t('aBlocked'));
   });
 }
-
 function addTask(){
   const title=document.getElementById('f-title').value.trim();
   const when=document.getElementById('f-when').value;
   const repeat=document.getElementById('f-repeat').value;
   const note=document.getElementById('f-note').value.trim();
-  if(!title) return alert('Bạn ơi, nhập tên việc cần nhắc nhé!');
-  if(!when) return alert('Chọn ngày giờ nhắc nhé!');
+  if(!title)return alert(t('aNoTitle'));
+  if(!when)return alert(t('aNoWhen'));
   const dt=new Date(when);
-  if(dt<=new Date() && repeat==='none') return alert('Giờ nhắc phải ở tương lai nhé!');
-  tasks.push({id:Date.now(),title,when:dt.getTime(),repeat,note,done:false,
+  if(dt<=new Date()&&repeat==='none')return alert(t('aPast'));
+  tasks.push({id:Date.now(),title:title,when:dt.getTime(),repeat:repeat,note:note,done:false,
     preDayNotified:false,preHourNotified:false,ack:false,lastNag:0});
   saveTasks();
-  document.getElementById('f-title').value='';
-  document.getElementById('f-note').value='';
-  askPermissionSilent();
-  render();
-  speak('Đã ghi nhớ! Uyển Nhi sẽ nhắc bạn '+title);
+  document.getElementById('f-title').value='';document.getElementById('f-note').value='';
+  if('Notification' in window&&Notification.permission==='default')Notification.requestPermission();
+  render(); voiceAdd(title);
 }
-function askPermissionSilent(){
-  if('Notification' in window && Notification.permission==='default') Notification.requestPermission();
+function toggleDone(id){const x=tasks.find(a=>a.id===id);if(!x)return;x.done=!x.done;saveTasks();render();}
+function delTask(id){if(!confirm(t('cDel')))return;tasks=tasks.filter(a=>a.id!==id);saveTasks();render();}
+function ackTask(id){
+  const x=tasks.find(a=>a.id===id);if(!x)return;
+  if(x.repeat==='daily')x.when+=86400000;else if(x.repeat==='weekly')x.when+=7*86400000;else x.done=true;
+  x.preDayNotified=false;x.preHourNotified=false;x.lastNag=0;x.ack=false;
+  saveTasks();render();voiceAck();
 }
-
-function toggleDone(id){
-  const t=tasks.find(x=>x.id===id); if(!t)return;
-  t.done=!t.done; saveTasks(); render();
-}
-function delTask(id){
-  if(!confirm('Xóa việc này nhé?'))return;
-  tasks=tasks.filter(x=>x.id!==id); saveTasks(); render();
-}
-
 function fmtTime(ts){
-  const d=new Date(ts), now=new Date();
-  const sameDay=d.toDateString()===now.toDateString();
-  const tm=d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
-  if(sameDay) return 'Hôm nay '+tm;
-  const tom=new Date(now); tom.setDate(now.getDate()+1);
-  if(d.toDateString()===tom.toDateString()) return 'Ngày mai '+tm;
-  return d.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit'})+' '+tm;
+  const d=new Date(ts),now=new Date(),loc=t('locale');
+  const tm=d.toLocaleTimeString(loc,{hour:'2-digit',minute:'2-digit'});
+  if(d.toDateString()===now.toDateString())return tm;
+  return d.toLocaleDateString(loc,{day:'2-digit',month:'2-digit'})+' '+tm;
 }
-const REPEAT_TXT={none:'',daily:' 🔁 mỗi ngày',weekly:' 🔁 mỗi tuần'};
-
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function render(){
-  const list=document.getElementById('taskList');
-  const now=Date.now();
-  const open=tasks.filter(t=>!t.done).sort((a,b)=>a.when-b.when);
-  const done=tasks.filter(t=>t.done).sort((a,b)=>b.when-a.when);
-  const today=open.filter(t=>new Date(t.when).toDateString()===new Date().toDateString()).length;
-  document.getElementById('st-today').textContent=today;
+  const list=document.getElementById('taskList'),now=Date.now();
+  const open=tasks.filter(x=>!x.done).sort((a,b)=>a.when-b.when);
+  const done=tasks.filter(x=>x.done).sort((a,b)=>b.when-a.when);
+  const todayN=open.filter(x=>new Date(x.when).toDateString()===new Date().toDateString()).length;
+  document.getElementById('st-today').textContent=todayN;
   document.getElementById('st-pending').textContent=open.length;
   document.getElementById('st-done').textContent=done.length;
-  if(!tasks.length){list.innerHTML='<div class="empty"><span class="big">💜</span>Chưa có việc nào.<br>Thêm việc đầu tiên để Uyển Nhi nhắc bạn nhé!</div>';return;}
+  document.getElementById('statPending').classList.toggle('hot show',open.some(x=>x.when<now));
+  if(!tasks.length){list.innerHTML='<div class="empty"><span class="big">'+t('emptyBig')+'</span>'+t('empty')+'</div>';return;}
   let html='';
-  // Banner nhắc dồn dập: việc đến giờ mà anh chưa bấm "Đã nhớ"
-  const dueNow=tasks.filter(t=>!t.done&&!t.ack&&t.when<=now);
+  const dueNow=tasks.filter(x=>!x.done&&!x.ack&&x.when<=now);
   if(dueNow.length){
-    html+='<div class="nag-banner"><div class="nag-title">🔔 Đến giờ rồi — Uyển Nhi nhắc nè!</div>';
-    for(const t of dueNow){
-      html+='<div class="nag-item"><span>'+escapeHtml(t.title)+'</span>'
-        +'<button class="btn-ack" onclick="ackTask('+t.id+')">Đã nhớ ✓</button></div>';
-    }
+    html+='<div class="nag-banner"><div class="nag-title">'+t('nagTitle')+'</div>';
+    for(const x of dueNow)
+      html+='<div class="nag-item"><span>'+escapeHtml(x.title)+'</span><button class="btn-ack" onclick="ackTask('+x.id+')">'+t('ackBtn')+'</button></div>';
     html+='</div>';
   }
-  const groups=[
-    ['⏰ Sắp đến / quá hạn',open],
-    ['✅ Đã hoàn thành',done]
-  ];
-  for(const [gt,arr] of groups){
-    if(!arr.length)continue;
-    html+='<div class="section-title">'+gt+'</div>';
-    for(const t of arr){
-      const overdue=!t.done&&t.when<now;
-      html+='<div class="task'+(t.done?' done':'')+(overdue?' overdue':'')+'">'
-        +'<div class="check" onclick="toggleDone('+t.id+')">'+(t.done?'✓':'')+'</div>'
-        +'<div class="t-body"><div class="t-title">'+escapeHtml(t.title)
-        +(t.repeat!=='none'?'<span class="badge badge-repeat">'+REPEAT_TXT[t.repeat].trim()+'</span>':'')
-        +(overdue?'<span class="badge" style="background:#fee2e2;color:#dc2626">quá hạn</span>':'')
-        +'</div><div class="t-meta"><span class="t-time">'+fmtTime(t.when)+'</span>'
-        +(t.note?' · '+escapeHtml(t.note):'')+'</div></div>'
-        +'<div class="t-actions"><button class="icon-btn del" onclick="delTask('+t.id+')">🗑</button></div>'
-        +'</div>';
+  const groups=[[t('secUpcoming'),open],[t('secDone'),done]];
+  for(const g of groups){
+    if(!g[1].length)continue;
+    html+='<div class="section-title">'+g[0]+'</div>';
+    for(const x of g[1]){
+      const od=!x.done&&x.when<now;
+      html+='<div class="task'+(x.done?' done':'')+(od?' overdue':'')+'">'
+        +'<div class="check" onclick="toggleDone('+x.id+')">'+(x.done?'✓':'')+'</div>'
+        +'<div class="t-body"><div class="t-title">'+escapeHtml(x.title)
+        +(x.repeat==='daily'?'<span class="badge">'+t('bDaily')+'</span>':'')
+        +(x.repeat==='weekly'?'<span class="badge">'+t('bWeekly')+'</span>':'')
+        +(od?'<span class="badge late">'+t('overdue')+'</span>':'')
+        +'</div><div class="t-meta"><span class="t-time">'+fmtTime(x.when)+'</span>'
+        +(x.note?' · '+escapeHtml(x.note):'')+'</div></div>'
+        +'<div class="t-actions"><button class="icon-btn del" onclick="delTask('+x.id+')">✕</button></div></div>';
     }
   }
   list.innerHTML=html;
 }
-function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-
-// Âm báo bằng WebAudio
+/* ---- Âm báo + giọng Uyển Nhi ---- */
 function beep(){
   if(!settings.sound)return;
   try{
@@ -309,88 +375,106 @@ function beep(){
     [523,659,784].forEach((f,i)=>{
       const o=ctx.createOscillator(),g=ctx.createGain();
       o.connect(g);g.connect(ctx.destination);o.frequency.value=f;o.type='sine';
-      const t=ctx.currentTime+i*0.22;
-      g.gain.setValueAtTime(0.001,t);g.gain.exponentialRampToValueAtTime(0.5,t+0.03);
-      g.gain.exponentialRampToValueAtTime(0.001,t+0.2);
-      o.start(t);o.stop(t+0.22);
+      const tm=ctx.currentTime+i*0.22;
+      g.gain.setValueAtTime(0.001,tm);g.gain.exponentialRampToValueAtTime(0.5,tm+0.03);
+      g.gain.exponentialRampToValueAtTime(0.001,tm+0.2);
+      o.start(tm);o.stop(tm+0.22);
     });
   }catch(e){}
 }
-// Uyển Nhi đọc lời nhắc
+/* Giọng Uyển Nhi thật (file thu sẵn) + giọng máy đọc tên việc */
+let voiceGen=0;
+function playAudio(src){return new Promise(res=>{try{const a=new Audio(src);a.onended=res;a.onerror=res;a.play().catch(res);}catch(e){res();}});}
+function ttsSpeak(text,lang){return new Promise(res=>{try{const u=new SpeechSynthesisUtterance(text);u.lang=lang||t('spLang');u.rate=0.95;u.onend=res;u.onerror=res;speechSynthesis.speak(u);}catch(e){res();}});}
+function speakSeq(items){
+  const g=++voiceGen;
+  (async()=>{
+    try{speechSynthesis.cancel();}catch(e){}
+    for(const it of items){
+      if(g!==voiceGen)return;
+      if(it.a)await playAudio(it.a); else await ttsSpeak(it.s);
+    }
+  })();
+}
 function speak(text){
   if(!settings.voice||!('speechSynthesis' in window))return;
-  try{
-    speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang='vi-VN';u.rate=0.95;
-    speechSynthesis.speak(u);
-  }catch(e){}
+  if(LANG==='vi'){speakSeq([{s:text}]);return;}
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=t('spLang');u.rate=0.95;speechSynthesis.speak(u);}catch(e){}
+}
+/* Chuỗi giọng Uyển Nhi theo từng tình huống (tiếng Việt) */
+function voiceAdd(title){
+  if(LANG==='vi'&&settings.voice)speakSeq([{a:'audio/added.mp3'},{s:title}]);
+  else speak(t('nAddSp').replace('{t}',title));
+}
+function voiceAck(){
+  if(LANG==='vi'&&settings.voice)speakSeq([{a:'audio/acked.mp3'}]);
+  else speak(t('nAckSp'));
+}
+function voiceTest(){
+  if(LANG==='vi'&&settings.voice)speakSeq([{a:'audio/test-ok.mp3'}]);
+  else speak(t('nTestSp'));
+}
+function voiceNag(title,note){
+  if(!(LANG==='vi'&&settings.voice)){speak(t('nNagSp').replace('{t}',title));return;}
+  speakSeq([{a:'audio/nag-intro.mp3'},{s:title+(note?'. '+note:'')},{a:'audio/nag-outro.mp3'}]);
+}
+function voicePreDay(title,whenStr){
+  if(!(LANG==='vi'&&settings.voice)){speak(t('nPreDayT')+'. '+title);return;}
+  speakSeq([{a:'audio/preday-intro.mp3'},{s:title+'. '+whenStr}]);
+}
+function voicePreHour(title){
+  if(!(LANG==='vi'&&settings.voice)){speak(t('nPreHourT')+'. '+title);return;}
+  speakSeq([{a:'audio/prehour-intro.mp3'},{s:title}]);
 }
 function testNotify(){
-  beep(); speak('Chuông báo hoạt động tốt! Uyển Nhi sẽ nhắc bạn đúng giờ.');
-  if('Notification' in window && Notification.permission==='granted')
-    new Notification('Uyển Nhi 💜',{body:'Thử chuông báo thành công!',icon:'avatar.png'});
+  beep();voiceTest();
+  if('Notification' in window&&Notification.permission==='granted')
+    new Notification(t('nTestT'),{body:t('nTestB'),icon:'avatar.png'});
   else askPermission();
 }
-
-// Vòng kiểm tra nhắc việc mỗi 20 giây
-// Quy tắc của Phong: nhắc 1 lần tối hôm trước (20:00) → nhắc 30 phút trước giờ
-// → đến giờ nhắc dồn dập mỗi 3 phút bằng giọng nói + tin nhắn, đến khi bấm "Đã nhớ"
-setInterval(checkReminders,20000);
-
+/* ---- Vòng nhắc: tối hôm trước 20:00 → 30 phút trước → dồn dập đến khi "Đã nhớ" ---- */
 function notify(title,body,tag){
   beep();
-  speak(title+'. '+body);
-  if('Notification' in window && Notification.permission==='granted')
-    new Notification(title,{body:body,icon:'avatar.png',tag:tag||('n-'+Date.now())});
+  if('Notification' in window&&Notification.permission==='granted')
+    new Notification(title,{body:body,icon:'avatar.png',tag:tag||('n'+Date.now())});
 }
-
+setInterval(checkReminders,20000);
 function checkReminders(){
-  const now=Date.now();
-  let changed=false;
-  for(const t of tasks){
-    if(t.done||t.ack)continue;
-    // 1. Nhắc 1 lần tối hôm trước (20:00)
-    const eve=new Date(t.when); eve.setDate(eve.getDate()-1); eve.setHours(20,0,0,0);
-    if(!t.preDayNotified && now>=eve.getTime() && now<t.when-3600000){
-      t.preDayNotified=true; changed=true;
-      notify('📅 Ngày mai bạn có việc',
-        t.title+' lúc '+fmtTime(t.when)+(t.note?'\n'+t.note:''),'preday-'+t.id);
+  const now=Date.now();let changed=false;
+  for(const x of tasks){
+    if(x.done||x.ack)continue;
+    const eve=new Date(x.when);eve.setDate(eve.getDate()-1);eve.setHours(20,0,0,0);
+    if(!x.preDayNotified&&now>=eve.getTime()&&now<x.when-3600000){
+      x.preDayNotified=true;changed=true;
+      notify(t('nPreDayT'),x.title+' · '+fmtTime(x.when)+(x.note?'\n'+x.note:''),'preday-'+x.id);
+      voicePreDay(x.title,fmtTime(x.when));
     }
-    // 2. Nhắc 30 phút trước giờ
-    if(!t.preHourNotified && now>=t.when-1800000 && now<t.when){
-      t.preHourNotified=true; changed=true;
-      notify('⏰ Sắp đến giờ','30 phút nữa: '+t.title,'prehour-'+t.id);
+    if(!x.preHourNotified&&now>=x.when-1800000&&now<x.when){
+      x.preHourNotified=true;changed=true;
+      notify(t('nPreHourT'),t('nPreHourB')+x.title,'prehour-'+x.id);
+      voicePreHour(x.title);
     }
-    // 3. Đến giờ: nhắc dồn dập mỗi 3 phút đến khi "Đã nhớ"
-    if(now>=t.when && now-(t.lastNag||0)>=180000){
-      t.lastNag=now; changed=true;
-      beep();
-      speak('Nhắc lại! '+t.title+'. Bạn bấm nút đã nhớ để Uyển Nhi dừng nhắc nhé.');
-      if('Notification' in window && Notification.permission==='granted')
-        new Notification('🔔 Uyển Nhi nhắc lại!',{body:t.title+(t.note?'\n'+t.note:''),
-          icon:'avatar.png',tag:'nag-'+t.id,requireInteraction:true});
+    if(now>=x.when&&now-(x.lastNag||0)>=180000){
+      x.lastNag=now;changed=true;
+      beep();voiceNag(x.title,x.note);
+      if('Notification' in window&&Notification.permission==='granted')
+        new Notification(t('nNagT'),{body:x.title+(x.note?'\n'+x.note:''),icon:'avatar.png',tag:'nag-'+x.id,requireInteraction:true});
     }
   }
   if(changed)saveTasks();
   render();
 }
-
-// Anh bấm "Đã nhớ" → dừng nhắc
-function ackTask(id){
-  const t=tasks.find(x=>x.id===id); if(!t)return;
-  if(t.repeat==='daily'){t.when+=86400000;}
-  else if(t.repeat==='weekly'){t.when+=7*86400000;}
-  else{t.done=true;}
-  t.preDayNotified=false;t.preHourNotified=false;t.lastNag=0;t.ack=false;
-  saveTasks();render();
-  speak('Tuyệt vời! Uyển Nhi dừng nhắc nhé. 💜');
-}
-
-render(); checkReminders();
-// Service worker (PWA offline)
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
-
+/* ---- init ---- */
+(function(){
+  document.getElementById('set-voice').checked=settings.voice;
+  document.getElementById('set-sound').checked=settings.sound;
+  document.getElementById('set-voice').onchange=e=>{settings.voice=e.target.checked;saveSettings();};
+  document.getElementById('set-sound').onchange=e=>{settings.sound=e.target.checked;saveSettings();};
+  if('Notification' in window&&Notification.permission==='default')
+    document.getElementById('permBanner').classList.add('show');
+  applyLang(); checkReminders();
+})();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
 </html>
