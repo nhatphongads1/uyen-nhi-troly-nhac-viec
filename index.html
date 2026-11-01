@@ -37,6 +37,23 @@
   .lang-sw button{border:none;background:transparent;padding:7px 10px;border-radius:9px;
     font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;font-family:var(--sans);}
   .lang-sw button.on{background:var(--ink);color:#fff;}
+  .gear-btn{border:1px solid var(--line);background:#fff;width:42px;height:42px;border-radius:12px;
+    font-size:20px;cursor:pointer;flex-shrink:0;}
+  .gear-btn:active{transform:scale(.94);}
+  /* ---------- Tabs ---------- */
+  .tabs{display:flex;gap:8px;margin:10px 0 4px;}
+  .tabs button{flex:1;border:1.5px solid var(--line);background:var(--bg);padding:10px;border-radius:12px;
+    font-size:14px;font-weight:800;color:var(--muted);cursor:pointer;font-family:var(--sans);}
+  .tabs button.on{background:var(--red);border-color:var(--red);color:#fff;}
+  /* ---------- Bottom sheet ---------- */
+  .sheet-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:none;
+    align-items:flex-end;justify-content:center;}
+  .sheet-backdrop.show{display:flex;}
+  .sheet{background:#fff;border-radius:22px 22px 0 0;width:100%;max-width:520px;padding:10px 20px 26px;
+    animation:slideUp .25s ease-out;max-height:80vh;overflow-y:auto;}
+  @keyframes slideUp{from{transform:translateY(60px);opacity:.6;}to{transform:translateY(0);opacity:1;}}
+  .sheet-handle{width:44px;height:5px;border-radius:3px;background:#DDDDE3;margin:6px auto 12px;}
+  .sheet h2{margin:0 0 6px;font-size:18px;font-weight:800;}
   .stats{display:flex;gap:10px;max-width:1100px;margin:12px auto 0;}
   .stat{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:14px;
     padding:10px 6px;text-align:center;position:relative;overflow:hidden;}
@@ -132,6 +149,7 @@
     <div class="lang-sw" id="langSw">
       <button data-lang="vi" class="on">VI</button><button data-lang="en">EN</button><button data-lang="zh">中文</button>
     </div>
+    <button class="gear-btn" onclick="openSettings()" aria-label="settings">⚙️</button>
   </div>
   <div class="stats">
     <div class="stat"><b id="st-today">0</b><span id="ui-stToday">Hôm nay</span></div>
@@ -164,21 +182,31 @@
         <input type="text" id="f-note" maxlength="200">
         <button class="btn" onclick="addTask()" id="ui-addBtn"></button>
       </div>
-      <div class="card">
-        <h2><span class="dot"></span><span id="ui-setTitle"></span></h2>
-        <label class="setting-row"><input type="checkbox" id="set-voice" checked><span id="ui-setVoice"></span></label>
-        <label class="setting-row"><input type="checkbox" id="set-sound" checked><span id="ui-setSound"></span></label>
-        <button class="btn btn-ghost" onclick="testNotify()" id="ui-testBtn"></button>
-      </div>
     </div>
     <div>
       <div class="card">
         <h2><span class="dot"></span><span id="ui-listTitle"></span></h2>
+        <div class="tabs">
+          <button data-tab="upcoming" class="on" id="tabUpcoming" onclick="setTab('upcoming')"></button>
+          <button data-tab="done" id="tabDone" onclick="setTab('done')"></button>
+        </div>
         <div id="taskList"></div>
       </div>
     </div>
   </div>
 </main>
+
+<!-- Bảng cài đặt trượt từ dưới lên (kiểu app TQ) -->
+<div class="sheet-backdrop" id="sheetBackdrop" onclick="closeSettings()">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <h2>⚙️ <span id="ui-setTitle"></span></h2>
+    <label class="setting-row"><input type="checkbox" id="set-voice" checked><span id="ui-setVoice"></span></label>
+    <label class="setting-row"><input type="checkbox" id="set-sound" checked><span id="ui-setSound"></span></label>
+    <button class="btn btn-ghost" onclick="testNotify()" id="ui-testBtn"></button>
+    <button class="btn" onclick="closeSettings()" id="ui-closeBtn"></button>
+  </div>
+</div>
 
 <footer><b id="ui-footName">Uyển Nhi</b> · <span id="ui-footText"></span></footer>
 
@@ -193,7 +221,7 @@ vi:{
   listTitle:'Việc của bạn',emptyBig:'💜',empty:'Chưa có việc nào.<br>Thêm việc đầu tiên để Uyển Nhi nhắc bạn nhé!',
   secUpcoming:'Sắp đến / quá hạn',secDone:'Đã hoàn thành',overdue:'quá hạn',bDaily:'mỗi ngày',bWeekly:'mỗi tuần',
   nagTitle:'🔔 Đến giờ rồi — Uyển Nhi nhắc nè!',ackBtn:'Đã nhớ ✓',
-  setTitle:'Cài đặt',setVoice:'Uyển Nhi đọc lời nhắc bằng giọng nói',setSound:'Âm báo khi đến giờ',testBtn:'Thử chuông báo',
+  setTitle:'Cài đặt',setVoice:'Uyển Nhi đọc lời nhắc bằng giọng nói',setSound:'Âm báo khi đến giờ',testBtn:'Thử chuông báo',closeBtn:'Đóng',tabUpcoming:'Sắp tới',tabDone:'Đã xong',
   permText:'🔔 Bật thông báo để Uyển Nhi nhắc bạn đúng giờ nhé!',permBtn:'Bật thông báo',
   footText:'Trợ lý nhắc việc — dữ liệu lưu riêng tư trên máy của bạn.',
   nPreDayT:'📅 Ngày mai bạn có việc',nPreHourT:'⏰ Sắp đến giờ',nPreHourB:'30 phút nữa: ',
@@ -212,7 +240,7 @@ en:{
   listTitle:'Your tasks',emptyBig:'💜',empty:'No tasks yet.<br>Add your first one!',
   secUpcoming:'Upcoming / overdue',secDone:'Completed',overdue:'overdue',bDaily:'daily',bWeekly:'weekly',
   nagTitle:'🔔 Time\'s up — reminder!',ackBtn:'Got it ✓',
-  setTitle:'Settings',setVoice:'Read reminders aloud with voice',setSound:'Alert sound on time',testBtn:'Test alert',
+  setTitle:'Settings',setVoice:'Read reminders aloud with voice',setSound:'Alert sound on time',testBtn:'Test alert',closeBtn:'Close',tabUpcoming:'Upcoming',tabDone:'Done',
   permText:'🔔 Enable notifications so I can remind you on time!',permBtn:'Enable',
   footText:'Reminder assistant — your data stays private on your device.',
   nPreDayT:'📅 You have tasks tomorrow',nPreHourT:'⏰ Almost time',nPreHourB:'In 30 minutes: ',
@@ -231,7 +259,7 @@ zh:{
   listTitle:'我的任务',emptyBig:'💜',empty:'还没有任务。<br>添加第一个任务吧！',
   secUpcoming:'即将到来 / 已逾期',secDone:'已完成',overdue:'已逾期',bDaily:'每天',bWeekly:'每周',
   nagTitle:'🔔 时间到——婉妮提醒您！',ackBtn:'知道了 ✓',
-  setTitle:'设置',setVoice:'婉妮语音播报提醒',setSound:'整点提示音',testBtn:'测试提示音',
+  setTitle:'设置',setVoice:'婉妮语音播报提醒',setSound:'整点提示音',testBtn:'测试提示音',closeBtn:'关闭',tabUpcoming:'待办',tabDone:'已完成',
   permText:'🔔 开启通知，让婉妮准时提醒您！',permBtn:'开启通知',
   footText:'提醒助手——数据仅保存在您的设备上。',
   nPreDayT:'📅 您明天有任务',nPreHourT:'⏰ 时间快到了',nPreHourB:'30分钟后：',
@@ -272,6 +300,9 @@ function applyLang(){
   document.getElementById('ui-setVoice').textContent=S.setVoice;
   document.getElementById('ui-setSound').textContent=S.setSound;
   document.getElementById('ui-testBtn').textContent='🔔 '+S.testBtn;
+  document.getElementById('ui-closeBtn').textContent=S.closeBtn;
+  document.getElementById('tabUpcoming').textContent=S.tabUpcoming;
+  document.getElementById('tabDone').textContent=S.tabDone;
   document.getElementById('ui-permText').textContent=S.permText;
   document.getElementById('ui-permBtn').textContent=S.permBtn;
   document.getElementById('ui-footName').textContent=LANG==='zh'?'婉妮':LANG==='en'?'Uyen Nhi':'Uyển Nhi';
@@ -330,6 +361,13 @@ function fmtTime(ts){
   return d.toLocaleDateString(loc,{day:'2-digit',month:'2-digit'})+' '+tm;
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+let curTab='upcoming';
+function setTab(tb){curTab=tb;
+  document.getElementById('tabUpcoming').classList.toggle('on',tb==='upcoming');
+  document.getElementById('tabDone').classList.toggle('on',tb==='done');
+  render();}
+function openSettings(){document.getElementById('sheetBackdrop').classList.add('show');}
+function closeSettings(){document.getElementById('sheetBackdrop').classList.remove('show');}
 function render(){
   const list=document.getElementById('taskList'),now=Date.now();
   const open=tasks.filter(x=>!x.done).sort((a,b)=>a.when-b.when);
@@ -348,9 +386,9 @@ function render(){
       html+='<div class="nag-item"><span>'+escapeHtml(x.title)+'</span><button class="btn-ack" onclick="ackTask('+x.id+')">'+t('ackBtn')+'</button></div>';
     html+='</div>';
   }
-  const groups=[[t('secUpcoming'),open],[t('secDone'),done]];
+  const groups=curTab==='upcoming'?[[t('secUpcoming'),open]]:[[t('secDone'),done]];
   for(const g of groups){
-    if(!g[1].length)continue;
+    if(!g[1].length){html+='<div class="empty"><span class="big">'+t('emptyBig')+'</span>'+t('empty')+'</div>';continue;}
     html+='<div class="section-title">'+g[0]+'</div>';
     for(const x of g[1]){
       const od=!x.done&&x.when<now;
