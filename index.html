@@ -106,6 +106,12 @@
   .icon-btn{border:1px solid var(--line);background:#fff;color:var(--muted);
     width:34px;height:34px;border-radius:10px;font-size:15px;cursor:pointer;}
   .icon-btn.del{color:var(--red);}
+  .t-btns{display:flex;gap:8px;margin-top:10px;}
+  .btn-mini{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:9px 6px;
+    font-size:13px;font-weight:800;color:var(--ink);cursor:pointer;font-family:var(--sans);}
+  .btn-mini:active{transform:scale(.96);}
+  .btn-mini.ack{background:var(--green);border-color:var(--green);color:#fff;flex:1.5;}
+  .btn-mini.del{color:var(--red);flex:.8;}
   .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;
     margin-left:6px;vertical-align:1px;background:var(--gold-soft);color:#8A6A2B;}
   .badge.late{background:var(--red);color:#fff;}
@@ -196,6 +202,29 @@
   </div>
 </main>
 
+
+<!-- Bảng sửa lịch hẹn -->
+<div class="sheet-backdrop" id="editBackdrop" onclick="closeEdit()">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <h2>✏️ <span id="ui-editTitle"></span></h2>
+    <label id="ui-eWhatL"></label>
+    <input type="text" id="e-title" maxlength="120">
+    <div class="row2">
+      <div><label id="ui-eWhenL"></label><input type="datetime-local" id="e-when"></div>
+      <div><label id="ui-eRepeatL"></label>
+        <select id="e-repeat">
+          <option value="none" id="ui-eROnce"></option>
+          <option value="daily" id="ui-eRDaily"></option>
+          <option value="weekly" id="ui-eRWeekly"></option>
+        </select>
+      </div>
+    </div>
+    <label id="ui-eNoteL"></label>
+    <input type="text" id="e-note" maxlength="200">
+    <button class="btn" onclick="saveEdit()" id="ui-eSaveBtn"></button>
+  </div>
+</div>
 <!-- Bảng cài đặt trượt từ dưới lên (kiểu app TQ) -->
 <div class="sheet-backdrop" id="sheetBackdrop" onclick="closeSettings()">
   <div class="sheet" onclick="event.stopPropagation()">
@@ -221,7 +250,7 @@ vi:{
   listTitle:'Việc của bạn',emptyBig:'💜',empty:'Chưa có việc nào.<br>Thêm việc đầu tiên để Uyển Nhi nhắc bạn nhé!',
   secUpcoming:'Sắp đến / quá hạn',secDone:'Đã hoàn thành',overdue:'quá hạn',bDaily:'mỗi ngày',bWeekly:'mỗi tuần',
   nagTitle:'🔔 Đến giờ rồi — Uyển Nhi nhắc nè!',ackBtn:'Đã nhớ ✓',
-  setTitle:'Cài đặt',setVoice:'Uyển Nhi đọc lời nhắc bằng giọng nói',setSound:'Âm báo khi đến giờ',testBtn:'Thử chuông báo',closeBtn:'Đóng',tabUpcoming:'Sắp tới',tabDone:'Đã xong',
+  setTitle:'Cài đặt',setVoice:'Uyển Nhi đọc lời nhắc bằng giọng nói',setSound:'Âm báo khi đến giờ',testBtn:'Thử chuông báo',closeBtn:'Đóng',tabUpcoming:'Sắp tới',tabDone:'Đã xong',editBtn:'Sửa',editTitle:'Sửa lịch hẹn',eSaveBtn:'Lưu lại',
   permText:'🔔 Bật thông báo để Uyển Nhi nhắc bạn đúng giờ nhé!',permBtn:'Bật thông báo',
   footText:'Trợ lý nhắc việc — dữ liệu lưu riêng tư trên máy của bạn.',
   nPreDayT:'📅 Ngày mai bạn có việc',nPreHourT:'⏰ Sắp đến giờ',nPreHourB:'30 phút nữa: ',
@@ -240,7 +269,7 @@ en:{
   listTitle:'Your tasks',emptyBig:'💜',empty:'No tasks yet.<br>Add your first one!',
   secUpcoming:'Upcoming / overdue',secDone:'Completed',overdue:'overdue',bDaily:'daily',bWeekly:'weekly',
   nagTitle:'🔔 Time\'s up — reminder!',ackBtn:'Got it ✓',
-  setTitle:'Settings',setVoice:'Read reminders aloud with voice',setSound:'Alert sound on time',testBtn:'Test alert',closeBtn:'Close',tabUpcoming:'Upcoming',tabDone:'Done',
+  setTitle:'Settings',setVoice:'Read reminders aloud with voice',setSound:'Alert sound on time',testBtn:'Test alert',closeBtn:'Close',tabUpcoming:'Upcoming',tabDone:'Done',editBtn:'Edit',editTitle:'Edit reminder',eSaveBtn:'Save',
   permText:'🔔 Enable notifications so I can remind you on time!',permBtn:'Enable',
   footText:'Reminder assistant — your data stays private on your device.',
   nPreDayT:'📅 You have tasks tomorrow',nPreHourT:'⏰ Almost time',nPreHourB:'In 30 minutes: ',
@@ -259,7 +288,7 @@ zh:{
   listTitle:'我的任务',emptyBig:'💜',empty:'还没有任务。<br>添加第一个任务吧！',
   secUpcoming:'即将到来 / 已逾期',secDone:'已完成',overdue:'已逾期',bDaily:'每天',bWeekly:'每周',
   nagTitle:'🔔 时间到——婉妮提醒您！',ackBtn:'知道了 ✓',
-  setTitle:'设置',setVoice:'婉妮语音播报提醒',setSound:'整点提示音',testBtn:'测试提示音',closeBtn:'关闭',tabUpcoming:'待办',tabDone:'已完成',
+  setTitle:'设置',setVoice:'婉妮语音播报提醒',setSound:'整点提示音',testBtn:'测试提示音',closeBtn:'关闭',tabUpcoming:'待办',tabDone:'已完成',editBtn:'编辑',editTitle:'编辑提醒',eSaveBtn:'保存',
   permText:'🔔 开启通知，让婉妮准时提醒您！',permBtn:'开启通知',
   footText:'提醒助手——数据仅保存在您的设备上。',
   nPreDayT:'📅 您明天有任务',nPreHourT:'⏰ 时间快到了',nPreHourB:'30分钟后：',
@@ -303,6 +332,16 @@ function applyLang(){
   document.getElementById('ui-closeBtn').textContent=S.closeBtn;
   document.getElementById('tabUpcoming').textContent=S.tabUpcoming;
   document.getElementById('tabDone').textContent=S.tabDone;
+  document.getElementById('ui-editTitle').textContent=S.editTitle;
+  document.getElementById('ui-eWhatL').textContent=S.fWhat;
+  document.getElementById('ui-eWhenL').textContent=S.fWhen;
+  document.getElementById('ui-eRepeatL').textContent=S.fRepeat;
+  document.getElementById('ui-eROnce').textContent=S.rOnce;
+  document.getElementById('ui-eRDaily').textContent=S.rDaily;
+  document.getElementById('ui-eRWeekly').textContent=S.rWeekly;
+  document.getElementById('ui-eNoteL').textContent=S.fNote;
+  document.getElementById('e-note').placeholder=S.fNotePh;
+  document.getElementById('ui-eSaveBtn').textContent=S.eSaveBtn;
   document.getElementById('ui-permText').textContent=S.permText;
   document.getElementById('ui-permBtn').textContent=S.permBtn;
   document.getElementById('ui-footName').textContent=LANG==='zh'?'婉妮':LANG==='en'?'Uyen Nhi':'Uyển Nhi';
@@ -344,10 +383,34 @@ function addTask(){
   saveTasks();
   document.getElementById('f-title').value='';document.getElementById('f-note').value='';
   if('Notification' in window&&Notification.permission==='default')Notification.requestPermission();
-  render(); voiceAdd(title);
+  render(); voiceAdd();
 }
 function toggleDone(id){const x=tasks.find(a=>a.id===id);if(!x)return;x.done=!x.done;saveTasks();render();}
 function delTask(id){if(!confirm(t('cDel')))return;tasks=tasks.filter(a=>a.id!==id);saveTasks();render();}
+let editingId=null;
+function openEdit(id){
+  const x=tasks.find(a=>a.id===id);if(!x)return;
+  editingId=id;
+  document.getElementById('e-title').value=x.title;
+  const d=new Date(x.when),pad=n=>String(n).padStart(2,'0');
+  document.getElementById('e-when').value=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());
+  document.getElementById('e-repeat').value=x.repeat;
+  document.getElementById('e-note').value=x.note||'';
+  document.getElementById('editBackdrop').classList.add('show');
+}
+function closeEdit(){document.getElementById('editBackdrop').classList.remove('show');editingId=null;}
+function saveEdit(){
+  const x=tasks.find(a=>a.id===editingId);if(!x)return closeEdit();
+  const title=document.getElementById('e-title').value.trim();
+  const when=document.getElementById('e-when').value;
+  if(!title)return alert(t('aNoTitle'));
+  if(!when)return alert(t('aNoWhen'));
+  x.title=title;x.when=new Date(when).getTime();
+  x.repeat=document.getElementById('e-repeat').value;
+  x.note=document.getElementById('e-note').value.trim();
+  x.preDayNotified=false;x.preHourNotified=false;x.lastNag=0;
+  saveTasks();closeEdit();render();
+}
 function ackTask(id){
   const x=tasks.find(a=>a.id===id);if(!x)return;
   if(x.repeat==='daily')x.when+=86400000;else if(x.repeat==='weekly')x.when+=7*86400000;else x.done=true;
@@ -400,7 +463,9 @@ function render(){
         +(od?'<span class="badge late">'+t('overdue')+'</span>':'')
         +'</div><div class="t-meta"><span class="t-time">'+fmtTime(x.when)+'</span>'
         +(x.note?' · '+escapeHtml(x.note):'')+'</div></div>'
-        +'<div class="t-actions"><button class="icon-btn del" onclick="delTask('+x.id+')">✕</button></div></div>';
+        +(x.done?'':'<div class="t-btns"><button class="btn-mini ack" onclick="ackTask('+x.id+')">'+t('ackBtn')+'</button><button class="btn-mini" onclick="openEdit('+x.id+')">'+t('editBtn')+'</button><button class="btn-mini del" onclick="delTask('+x.id+')">✕</button></div>')
+        +(x.done?'<div class="t-btns"><button class="btn-mini del" onclick="delTask('+x.id+')">✕</button></div>':'')
+        +'</div>';
     }
   }
   list.innerHTML=html;
@@ -420,25 +485,20 @@ function beep(){
     });
   }catch(e){}
 }
-/* Giọng Uyển Nhi thật (file thu sẵn) + giọng máy đọc tên việc */
+/* Giọng Uyển Nhi thật (file thu sẵn) — KHÔNG dùng giọng máy */
 let voiceGen=0;
 function playAudio(src){return new Promise(res=>{try{const a=new Audio(src);a.onended=res;a.onerror=res;a.play().catch(res);}catch(e){res();}});}
-function ttsSpeak(text,lang){return new Promise(res=>{try{const u=new SpeechSynthesisUtterance(text);u.lang=lang||t('spLang');u.rate=0.95;u.onend=res;u.onerror=res;speechSynthesis.speak(u);}catch(e){res();}});}
 function speakSeq(items){
+  if(!settings.voice)return;
   const g=++voiceGen;
-  (async()=>{
-    try{speechSynthesis.cancel();}catch(e){}
-    for(const it of items){
-      if(g!==voiceGen)return;
-      if(it.a)await playAudio(it.a); else await ttsSpeak(it.s);
-    }
-  })();
+  (async()=>{for(const it of items){if(g!==voiceGen)return;await playAudio(it);}})();
 }
-function speak(text){
-  if(!settings.voice||!('speechSynthesis' in window))return;
-  if(LANG==='vi'){speakSeq([{s:text}]);return;}
-  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=t('spLang');u.rate=0.95;speechSynthesis.speak(u);}catch(e){}
-}
+function voiceAdd(){speakSeq(['audio/added.mp3']);}
+function voiceAck(){speakSeq(['audio/acked.mp3']);}
+function voiceTest(){speakSeq(['audio/test-ok.mp3']);}
+function voiceNag(){speakSeq(['audio/nag-intro.mp3','audio/nag-outro.mp3']);}
+function voicePreDay(){speakSeq(['audio/preday-intro.mp3']);}
+function voicePreHour(){speakSeq(['audio/prehour-intro.mp3']);}
 /* Chuỗi giọng Uyển Nhi theo từng tình huống (tiếng Việt) */
 function voiceAdd(title){
   if(LANG==='vi'&&settings.voice)speakSeq([{a:'audio/added.mp3'},{s:title}]);
@@ -485,16 +545,16 @@ function checkReminders(){
     if(!x.preDayNotified&&now>=eve.getTime()&&now<x.when-3600000){
       x.preDayNotified=true;changed=true;
       notify(t('nPreDayT'),x.title+' · '+fmtTime(x.when)+(x.note?'\n'+x.note:''),'preday-'+x.id);
-      voicePreDay(x.title,fmtTime(x.when));
+      voicePreDay();
     }
     if(!x.preHourNotified&&now>=x.when-1800000&&now<x.when){
       x.preHourNotified=true;changed=true;
       notify(t('nPreHourT'),t('nPreHourB')+x.title,'prehour-'+x.id);
-      voicePreHour(x.title);
+      voicePreHour();
     }
-    if(now>=x.when&&now-(x.lastNag||0)>=180000){
+    if(now>=x.when-300000&&now-(x.lastNag||0)>=60000){
       x.lastNag=now;changed=true;
-      beep();voiceNag(x.title,x.note);
+      beep();voiceNag();
       if('Notification' in window&&Notification.permission==='granted')
         new Notification(t('nNagT'),{body:x.title+(x.note?'\n'+x.note:''),icon:'avatar.png',tag:'nag-'+x.id,requireInteraction:true});
     }
