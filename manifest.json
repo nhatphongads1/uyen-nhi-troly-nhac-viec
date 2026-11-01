@@ -1,1 +1,28 @@
-{"background_color":"#faf8ff","description":"Trợ lý nhắc việc cùng Uyển Nhi — thông báo đúng giờ, đọc lời nhắc bằng giọng nói.","display":"standalone","icons":[{"sizes":"512x512","src":"avatar.png","type":"image/png"}],"lang":"vi","name":"Uyển Nhi — Trợ lý nhắc việc","short_name":"Nhắc việc","start_url":"./index.html","theme_color":"#7c3aed"}
+{
+  "name": "Uyển Nhi — Trợ lý nhắc việc",
+  "short_name": "Nhắc việc",
+  "description": "Trợ lý nhắc việc cùng Uyển Nhi — thông báo đúng giờ, đọc lời nhắc bằng giọng nói.",
+  "lang": "vi",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#D21F2B",
+  "theme_color": "#D21F2B",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
-const CACHE='uyennhi-nhacviec-v13';
-const ASSETS=['./','./index.html','./manifest.json','./avatar.png',
+const CACHE='uyennhi-nhacviec-v14';
+const ASSETS=['./','./index.html','./manifest.json','./avatar.png','./icon-192.png','./icon-512.png',
   './audio/nag-intro.mp3','./audio/nag-outro.mp3','./audio/preday-intro.mp3',
   './audio/prehour-intro.mp3','./audio/added.mp3','./audio/acked.mp3','./audio/test-ok.mp3'];
 self.addEventListener('install',e=>{
