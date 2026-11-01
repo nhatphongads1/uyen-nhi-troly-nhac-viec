@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Uyển Nhi — Trợ lý nhắc việc</title>
+<meta name="theme-color" content="#4C1D95">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="avatar.png">
+<style>
+  @font-face{font-family:'Playfair Display';src:url('fonts/playfair.woff2') format('woff2');font-display:swap;}
+  :root{
+    --ivory:#FAF7F1; --card:#FFFDF9; --ink:#2B2440; --muted:#8F86A0;
+    --royal:#4C1D95; --royal-2:#6D28D9; --gold:#C6A15B; --gold-soft:#F4EBD6;
+    --line:#EDE4D3; --green:#1E7E4D; --red:#B91C1C;
+    --shadow:0 10px 34px rgba(76,29,149,.10);
+    --serif:'Playfair Display',Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;font-family:var(--sans);background:var(--ivory);color:var(--ink);
+    min-height:100vh;padding-bottom:80px;
+    background-image:radial-gradient(1200px 500px at 50% -10%,#F1E8F9 0%,var(--ivory) 60%);}
+  /* ---------- Header ---------- */
+  header{background:linear-gradient(150deg,#3B1470 0%,var(--royal) 55%,#5E2BB8 100%);
+    color:#fff;padding:34px 22px 26px;border-radius:0 0 32px 32px;
+    box-shadow:0 12px 40px rgba(76,29,149,.28);position:relative;overflow:hidden;}
+  header::after{content:'';position:absolute;left:22px;right:22px;bottom:14px;height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.7;}
+  .head-row{display:flex;align-items:center;gap:16px;}
+  .avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;flex-shrink:0;
+    border:2px solid var(--gold);padding:2px;background:#fff;
+    box-shadow:0 4px 18px rgba(0,0,0,.3);}
+  .brand-eyebrow{font-size:11px;letter-spacing:3px;color:var(--gold);font-weight:700;margin:0 0 4px;}
+  .head-row h1{margin:0;font-family:var(--serif);font-size:27px;font-weight:700;letter-spacing:.5px;}
+  .head-row p{margin:5px 0 0;opacity:.92;font-size:13.5px;font-weight:400;}
+  .stats{display:flex;margin-top:20px;background:rgba(255,255,255,.10);
+    border:1px solid rgba(198,161,91,.45);border-radius:18px;overflow:hidden;backdrop-filter:blur(6px);}
+  .stat{flex:1;text-align:center;padding:13px 6px;position:relative;}
+  .stat+.stat::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:1px;
+    background:rgba(198,161,91,.4);}
+  .stat b{display:block;font-family:var(--serif);font-size:26px;color:#fff;}
+  .stat span{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:#E9DCC3;opacity:.95;}
+  /* ---------- Layout ---------- */
+  main{max-width:580px;margin:0 auto;padding:18px 16px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:22px;
+    box-shadow:var(--shadow);padding:20px;margin-bottom:16px;}
+  .card-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
+  .card-head h2{margin:0;font-family:var(--serif);font-size:19px;color:var(--royal);font-weight:700;}
+  .card-head .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent);}
+  label{display:block;font-size:12px;letter-spacing:1px;text-transform:uppercase;
+    color:var(--muted);margin:14px 0 6px;font-weight:600;}
+  input[type=text],input[type=datetime-local],select{
+    width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:14px;font-size:16px;
+    background:#fff;color:var(--ink);outline:none;font-family:var(--sans);transition:border-color .2s, box-shadow .2s;}
+  input:focus,select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(198,161,91,.18);}
+  .row2{display:flex;gap:10px;}
+  .row2>div{flex:1;min-width:0;}
+  .btn{display:block;width:100%;padding:15px;margin-top:18px;border:none;border-radius:16px;cursor:pointer;
+    background:linear-gradient(135deg,#D9B96A,var(--gold) 45%,#A8823F);color:#3A2A10;
+    font-size:16px;font-weight:800;letter-spacing:.6px;
+    box-shadow:0 8px 22px rgba(198,161,91,.4),inset 0 1px 0 rgba(255,255,255,.5);}
+  .btn:active{transform:scale(.98);}
+  .btn-ghost{background:transparent;color:var(--royal);border:1.5px solid var(--royal);box-shadow:none;
+    font-weight:700;}
+  /* ---------- Tasks ---------- */
+  .section-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;
+    letter-spacing:1.6px;margin:20px 4px 10px;display:flex;align-items:center;gap:8px;}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--line);}
+  .task{display:flex;align-items:flex-start;gap:13px;padding:14px;border-radius:16px;
+    border:1px solid var(--line);margin-bottom:10px;background:#fff;transition:box-shadow .2s;}
+  .task:active{box-shadow:var(--shadow);}
+  .task.done{opacity:.5;}
+  .task.done .t-title{text-decoration:line-through;}
+  .task.overdue{border-color:#F3C1C1;background:#FDF6F6;}
+  .check{width:28px;height:28px;border-radius:50%;border:1.8px solid var(--gold);flex-shrink:0;
+    margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:14px;background:#fff;transition:all .2s;}
+  .task.done .check{background:var(--green);border-color:var(--green);}
+  .t-body{flex:1;min-width:0;}
+  .t-title{font-weight:600;font-size:15.5px;line-height:1.45;}
+  .t-meta{font-size:13px;color:var(--muted);margin-top:5px;}
+  .t-time{font-weight:700;color:var(--royal);}
+  .task.overdue .t-time{color:var(--red);}
+  .t-actions{flex-shrink:0;}
+  .icon-btn{border:1px solid var(--line);background:var(--ivory);color:var(--muted);
+    width:36px;height:36px;border-radius:12px;font-size:16px;cursor:pointer;}
+  .icon-btn.del{color:var(--red);border-color:#F3C1C1;background:#FDF6F6;}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;
+    margin-left:6px;vertical-align:2px;letter-spacing:.4px;}
+  .badge-repeat{background:var(--gold-soft);color:#8A6A2B;}
+  .badge-late{background:#FDE8E8;color:var(--red);}
+  .empty{text-align:center;color:var(--muted);padding:34px 12px;font-size:14.5px;line-height:1.7;}
+  .empty .big{font-size:44px;display:block;margin-bottom:10px;}
+  /* ---------- Nag banner ---------- */
+  .nag-banner{background:linear-gradient(135deg,#FFF7F7,#FDECEC);border:1.5px solid #E8A0A0;
+    border-radius:20px;box-shadow:0 10px 30px rgba(185,28,28,.14);padding:16px;margin-bottom:6px;
+    animation:pulse 1.8s infinite;}
+  @keyframes pulse{0%,100%{box-shadow:0 10px 30px rgba(185,28,28,.12);}50%{box-shadow:0 10px 34px rgba(185,28,28,.3);}}
+  .nag-title{font-family:var(--serif);font-weight:700;color:var(--red);font-size:17px;margin-bottom:6px;}
+  .nag-item{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:#fff;border:1px solid #F3C1C1;border-radius:12px;padding:10px 12px;margin-top:8px;}
+  .nag-item span{font-weight:600;font-size:14px;}
+  .btn-ack{border:none;background:linear-gradient(135deg,#22A35C,var(--green));color:#fff;font-weight:800;
+    font-size:14px;padding:11px 20px;border-radius:12px;cursor:pointer;flex-shrink:0;
+    box-shadow:0 6px 16px rgba(30,126,77,.35);}
+  .btn-ack:active{transform:scale(.95);}
+  /* ---------- Misc ---------- */
+  .perm-banner{background:#FFFBEB;border:1.5px solid var(--gold);border-radius:16px;padding:14px;
+    font-size:14px;margin-bottom:16px;display:none;line-height:1.6;}
+  .perm-banner.show{display:block;}
+  .perm-banner button{margin-top:10px;padding:11px 20px;border:none;border-radius:12px;cursor:pointer;
+    background:linear-gradient(135deg,#D9B96A,var(--gold));color:#3A2A10;font-weight:800;font-size:14px;}
+  .setting-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);
+    cursor:pointer;font-size:15px;}
+  .setting-row:last-of-type{border-bottom:none;}
+  .setting-row input{width:22px;height:22px;accent-color:var(--royal);}
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:26px 16px;line-height:1.8;}
+  footer .sig{font-family:var(--serif);color:var(--gold);font-size:15px;letter-spacing:1px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="head-row">
+    <img class="avatar" src="avatar.png" alt="Uyển Nhi">
+    <div>
+      <p class="brand-eyebrow">TRỢ LÝ CÁ NHÂN</p>
+      <h1>Uyển Nhi</h1>
+      <p id="greeting">Trợ lý nhắc việc của bạn</p>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><b id="st-today">0</b><span>Hôm nay</span></div>
+    <div class="stat"><b id="st-pending">0</b><span>Chưa xong</span></div>
+    <div class="stat"><b id="st-done">0</b><span>Đã xong</span></div>
+  </div>
+</header>
+
+<main>
+  <div class="perm-banner" id="permBanner">
+    🔔 <b>Bật thông báo</b> để Uyển Nhi nhắc bạn đúng giờ, dù đang bận rộn nhé!
+    <br><button onclick="askPermission()">Bật thông báo</button>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>Thêm việc cần nhắc</h2><div class="rule"></div></div>
+    <label>Việc gì?</label>
+    <input type="text" id="f-title" placeholder="VD: Uống thuốc, họp tổ chuyên môn..." maxlength="120">
+    <div class="row2">
+      <div>
+        <label>Ngày giờ nhắc</label>
+        <input type="datetime-local" id="f-when">
+      </div>
+      <div>
+        <label>Lặp lại</label>
+        <select id="f-repeat">
+          <option value="none">Một lần</option>
+          <option value="daily">Mỗi ngày</option>
+          <option value="weekly">Mỗi tuần</option>
+        </select>
+      </div>
+    </div>
+    <label>Ghi chú</label>
+    <input type="text" id="f-note" placeholder="Không bắt buộc — VD: Mang theo sổ..." maxlength="200">
+    <button class="btn" onclick="addTask()">✦ &nbsp;Nhắc tôi nhé&nbsp; ✦</button>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>Việc của bạn</h2><div class="rule"></div></div>
+    <div id="taskList"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>Cài đặt</h2><div class="rule"></div></div>
+    <label class="setting-row"><input type="checkbox" id="set-voice" checked> Uyển Nhi đọc lời nhắc bằng giọng nói</label>
+    <label class="setting-row"><input type="checkbox" id="set-sound" checked> Âm báo khi đến giờ</label>
+    <button class="btn btn-ghost" onclick="testNotify()">🔔 Thử chuông báo</button>
+  </div>
+</main>
+
+<footer>
+  <div class="sig">✦ Uyển Nhi ✦</div>
+  Trợ lý nhắc việc — dữ liệu lưu riêng tư trên máy của bạn.
+</footer>
+
+<script>
+
+const LS_KEY='uyennhi_reminders_v1', SET_KEY='uyennhi_reminder_settings';
+let tasks=loadTasks(), settings=loadSettings();
+
+function loadTasks(){ try{return JSON.parse(localStorage.getItem(LS_KEY))||[]}catch(e){return[]} }
+function saveTasks(){ localStorage.setItem(LS_KEY,JSON.stringify(tasks)); }
+function loadSettings(){ try{return Object.assign({voice:true,sound:true},JSON.parse(localStorage.getItem(SET_KEY))||{})}catch(e){return{voice:true,sound:true}} }
+function saveSettings(){ localStorage.setItem(SET_KEY,JSON.stringify(settings)); }
+
+// Greeting
+(function(){
+  const h=new Date().getHours();
+  const g=h<5?'Chúc bạn ngủ ngon 🌙':h<11?'Chào buổi sáng ☀️':h<13?'Chào buổi trưa 🍱':h<18?'Chào buổi chiều 🌤️':'Chào buổi tối 🌙';
+  document.getElementById('greeting').textContent=g+' — Uyển Nhi nhắc việc giúp bạn';
+  document.getElementById('set-voice').checked=settings.voice;
+  document.getElementById('set-sound').checked=settings.sound;
+  document.getElementById('set-voice').onchange=e=>{settings.voice=e.target.checked;saveSettings()};
+  document.getElementById('set-sound').onchange=e=>{settings.sound=e.target.checked;saveSettings()};
+  if('Notification' in window && Notification.permission==='default')
+    document.getElementById('permBanner').classList.add('show');
+})();
+
+function askPermission(){
+  if(!('Notification' in window)) return alert('Trình duyệt này không hỗ trợ thông báo.');
+  Notification.requestPermission().then(p=>{
+    if(p==='granted') document.getElementById('permBanner').classList.remove('show');
+    else alert('Bạn đã chặn thông báo — vào cài đặt trình duyệt để bật lại nhé.');
+  });
+}
+
+function addTask(){
+  const title=document.getElementById('f-title').value.trim();
+  const when=document.getElementById('f-when').value;
+  const repeat=document.getElementById('f-repeat').value;
+  const note=document.getElementById('f-note').value.trim();
+  if(!title) return alert('Bạn ơi, nhập tên việc cần nhắc nhé!');
+  if(!when) return alert('Chọn ngày giờ nhắc nhé!');
+  const dt=new Date(when);
+  if(dt<=new Date() && repeat==='none') return alert('Giờ nhắc phải ở tương lai nhé!');
+  tasks.push({id:Date.now(),title,when:dt.getTime(),repeat,note,done:false,
+    preDayNotified:false,preHourNotified:false,ack:false,lastNag:0});
+  saveTasks();
+  document.getElementById('f-title').value='';
+  document.getElementById('f-note').value='';
+  askPermissionSilent();
+  render();
+  speak('Đã ghi nhớ! Uyển Nhi sẽ nhắc bạn '+title);
+}
+function askPermissionSilent(){
+  if('Notification' in window && Notification.permission==='default') Notification.requestPermission();
+}
+
+function toggleDone(id){
+  const t=tasks.find(x=>x.id===id); if(!t)return;
+  t.done=!t.done; saveTasks(); render();
+}
+function delTask(id){
+  if(!confirm('Xóa việc này nhé?'))return;
+  tasks=tasks.filter(x=>x.id!==id); saveTasks(); render();
+}
+
+function fmtTime(ts){
+  const d=new Date(ts), now=new Date();
+  const sameDay=d.toDateString()===now.toDateString();
+  const tm=d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+  if(sameDay) return 'Hôm nay '+tm;
+  const tom=new Date(now); tom.setDate(now.getDate()+1);
+  if(d.toDateString()===tom.toDateString()) return 'Ngày mai '+tm;
+  return d.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit'})+' '+tm;
+}
+const REPEAT_TXT={none:'',daily:' 🔁 mỗi ngày',weekly:' 🔁 mỗi tuần'};
+
+function render(){
+  const list=document.getElementById('taskList');
+  const now=Date.now();
+  const open=tasks.filter(t=>!t.done).sort((a,b)=>a.when-b.when);
+  const done=tasks.filter(t=>t.done).sort((a,b)=>b.when-a.when);
+  const today=open.filter(t=>new Date(t.when).toDateString()===new Date().toDateString()).length;
+  document.getElementById('st-today').textContent=today;
+  document.getElementById('st-pending').textContent=open.length;
+  document.getElementById('st-done').textContent=done.length;
+  if(!tasks.length){list.innerHTML='<div class="empty"><span class="big">💜</span>Chưa có việc nào.<br>Thêm việc đầu tiên để Uyển Nhi nhắc bạn nhé!</div>';return;}
+  let html='';
+  // Banner nhắc dồn dập: việc đến giờ mà anh chưa bấm "Đã nhớ"
+  const dueNow=tasks.filter(t=>!t.done&&!t.ack&&t.when<=now);
+  if(dueNow.length){
+    html+='<div class="nag-banner"><div class="nag-title">🔔 Đến giờ rồi — Uyển Nhi nhắc nè!</div>';
+    for(const t of dueNow){
+      html+='<div class="nag-item"><span>'+escapeHtml(t.title)+'</span>'
+        +'<button class="btn-ack" onclick="ackTask('+t.id+')">Đã nhớ ✓</button></div>';
+    }
+    html+='</div>';
+  }
+  const groups=[
+    ['⏰ Sắp đến / quá hạn',open],
+    ['✅ Đã hoàn thành',done]
+  ];
+  for(const [gt,arr] of groups){
+    if(!arr.length)continue;
+    html+='<div class="section-title">'+gt+'</div>';
+    for(const t of arr){
+      const overdue=!t.done&&t.when<now;
+      html+='<div class="task'+(t.done?' done':'')+(overdue?' overdue':'')+'">'
+        +'<div class="check" onclick="toggleDone('+t.id+')">'+(t.done?'✓':'')+'</div>'
+        +'<div class="t-body"><div class="t-title">'+escapeHtml(t.title)
+        +(t.repeat!=='none'?'<span class="badge badge-repeat">'+REPEAT_TXT[t.repeat].trim()+'</span>':'')
+        +(overdue?'<span class="badge" style="background:#fee2e2;color:#dc2626">quá hạn</span>':'')
+        +'</div><div class="t-meta"><span class="t-time">'+fmtTime(t.when)+'</span>'
+        +(t.note?' · '+escapeHtml(t.note):'')+'</div></div>'
+        +'<div class="t-actions"><button class="icon-btn del" onclick="delTask('+t.id+')">🗑</button></div>'
+        +'</div>';
+    }
+  }
+  list.innerHTML=html;
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+// Âm báo bằng WebAudio
+function beep(){
+  if(!settings.sound)return;
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    [523,659,784].forEach((f,i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);o.frequency.value=f;o.type='sine';
+      const t=ctx.currentTime+i*0.22;
+      g.gain.setValueAtTime(0.001,t);g.gain.exponentialRampToValueAtTime(0.5,t+0.03);
+      g.gain.exponentialRampToValueAtTime(0.001,t+0.2);
+      o.start(t);o.stop(t+0.22);
+    });
+  }catch(e){}
+}
+// Uyển Nhi đọc lời nhắc
+function speak(text){
+  if(!settings.voice||!('speechSynthesis' in window))return;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='vi-VN';u.rate=0.95;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function testNotify(){
+  beep(); speak('Chuông báo hoạt động tốt! Uyển Nhi sẽ nhắc bạn đúng giờ.');
+  if('Notification' in window && Notification.permission==='granted')
+    new Notification('Uyển Nhi 💜',{body:'Thử chuông báo thành công!',icon:'avatar.png'});
+  else askPermission();
+}
+
+// Vòng kiểm tra nhắc việc mỗi 20 giây
+// Quy tắc của Phong: nhắc 1 lần tối hôm trước (20:00) → nhắc 30 phút trước giờ
+// → đến giờ nhắc dồn dập mỗi 3 phút bằng giọng nói + tin nhắn, đến khi bấm "Đã nhớ"
+setInterval(checkReminders,20000);
+
+function notify(title,body,tag){
+  beep();
+  speak(title+'. '+body);
+  if('Notification' in window && Notification.permission==='granted')
+    new Notification(title,{body:body,icon:'avatar.png',tag:tag||('n-'+Date.now())});
+}
+
+function checkReminders(){
+  const now=Date.now();
+  let changed=false;
+  for(const t of tasks){
+    if(t.done||t.ack)continue;
+    // 1. Nhắc 1 lần tối hôm trước (20:00)
+    const eve=new Date(t.when); eve.setDate(eve.getDate()-1); eve.setHours(20,0,0,0);
+    if(!t.preDayNotified && now>=eve.getTime() && now<t.when-3600000){
+      t.preDayNotified=true; changed=true;
+      notify('📅 Ngày mai bạn có việc',
+        t.title+' lúc '+fmtTime(t.when)+(t.note?'\n'+t.note:''),'preday-'+t.id);
+    }
+    // 2. Nhắc 30 phút trước giờ
+    if(!t.preHourNotified && now>=t.when-1800000 && now<t.when){
+      t.preHourNotified=true; changed=true;
+      notify('⏰ Sắp đến giờ','30 phút nữa: '+t.title,'prehour-'+t.id);
+    }
+    // 3. Đến giờ: nhắc dồn dập mỗi 3 phút đến khi "Đã nhớ"
+    if(now>=t.when && now-(t.lastNag||0)>=180000){
+      t.lastNag=now; changed=true;
+      beep();
+      speak('Nhắc lại! '+t.title+'. Bạn bấm nút đã nhớ để Uyển Nhi dừng nhắc nhé.');
+      if('Notification' in window && Notification.permission==='granted')
+        new Notification('🔔 Uyển Nhi nhắc lại!',{body:t.title+(t.note?'\n'+t.note:''),
+          icon:'avatar.png',tag:'nag-'+t.id,requireInteraction:true});
+    }
+  }
+  if(changed)saveTasks();
+  render();
+}
+
+// Anh bấm "Đã nhớ" → dừng nhắc
+function ackTask(id){
+  const t=tasks.find(x=>x.id===id); if(!t)return;
+  if(t.repeat==='daily'){t.when+=86400000;}
+  else if(t.repeat==='weekly'){t.when+=7*86400000;}
+  else{t.done=true;}
+  t.preDayNotified=false;t.preHourNotified=false;t.lastNag=0;t.ack=false;
+  saveTasks();render();
+  speak('Tuyệt vời! Uyển Nhi dừng nhắc nhé. 💜');
+}
+
+render(); checkReminders();
+// Service worker (PWA offline)
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+</script>
+</body>
+</html>
