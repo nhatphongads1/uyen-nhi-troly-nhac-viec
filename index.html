@@ -54,6 +54,13 @@
   @keyframes slideUp{from{transform:translateY(60px);opacity:.6;}to{transform:translateY(0);opacity:1;}}
   .sheet-handle{width:44px;height:5px;border-radius:3px;background:#DDDDE3;margin:6px auto 12px;}
   .sheet h2{margin:0 0 6px;font-size:18px;font-weight:800;}
+  .sheet-sec{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:16px 0 4px;}
+  .manage-item{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line);}
+  .manage-info{flex:1;min-width:0;}
+  .manage-title{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .manage-time{font-size:12px;color:var(--muted);}
+  .manage-item .btn-mini{flex:0 0 auto;padding:8px 14px;}
+  .manage-empty{color:var(--muted);font-size:13px;padding:8px 0;}
   .stats{display:flex;gap:10px;max-width:1100px;margin:12px auto 0;}
   .stat{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:14px;
     padding:10px 6px;text-align:center;position:relative;overflow:hidden;}
@@ -233,6 +240,8 @@
     <label class="setting-row"><input type="checkbox" id="set-voice" checked><span id="ui-setVoice"></span></label>
     <label class="setting-row"><input type="checkbox" id="set-sound" checked><span id="ui-setSound"></span></label>
     <button class="btn btn-ghost" onclick="testNotify()" id="ui-testBtn"></button>
+    <div class="sheet-sec">📅 <span id="ui-manageTitle"></span></div>
+    <div id="manageList"></div>
     <button class="btn" onclick="closeSettings()" id="ui-closeBtn"></button>
   </div>
 </div>
@@ -250,7 +259,7 @@ vi:{
   listTitle:'Việc của bạn',emptyBig:'💜',empty:'Chưa có việc nào.<br>Thêm việc đầu tiên để Uyển Nhi nhắc bạn nhé!',
   secUpcoming:'Sắp đến / quá hạn',secDone:'Đã hoàn thành',overdue:'quá hạn',bDaily:'mỗi ngày',bWeekly:'mỗi tuần',
   nagTitle:'🔔 Đến giờ rồi — Uyển Nhi nhắc nè!',ackBtn:'Đã nhớ ✓',
-  setTitle:'Cài đặt',setVoice:'Uyển Nhi đọc lời nhắc bằng giọng nói',setSound:'Âm báo khi đến giờ',testBtn:'Thử chuông báo',closeBtn:'Đóng',tabUpcoming:'Sắp tới',tabDone:'Đã xong',editBtn:'Sửa',editTitle:'Sửa lịch hẹn',eSaveBtn:'Lưu lại',
+  setTitle:'Cài đặt',setVoice:'Uyển Nhi đọc lời nhắc bằng giọng nói',setSound:'Âm báo khi đến giờ',testBtn:'Thử chuông báo',closeBtn:'Đóng',tabUpcoming:'Sắp tới',tabDone:'Đã xong',editBtn:'Sửa',editTitle:'Sửa lịch hẹn',eSaveBtn:'Lưu lại',delBtn:'Xóa',manageTitle:'Quản lý lịch hẹn',emptyShort:'Chưa có lịch nào.',
   permText:'🔔 Bật thông báo để Uyển Nhi nhắc bạn đúng giờ nhé!',permBtn:'Bật thông báo',
   footText:'Trợ lý nhắc việc — dữ liệu lưu riêng tư trên máy của bạn.',
   nPreDayT:'📅 Ngày mai bạn có việc',nPreHourT:'⏰ Sắp đến giờ',nPreHourB:'30 phút nữa: ',
@@ -269,7 +278,7 @@ en:{
   listTitle:'Your tasks',emptyBig:'💜',empty:'No tasks yet.<br>Add your first one!',
   secUpcoming:'Upcoming / overdue',secDone:'Completed',overdue:'overdue',bDaily:'daily',bWeekly:'weekly',
   nagTitle:'🔔 Time\'s up — reminder!',ackBtn:'Got it ✓',
-  setTitle:'Settings',setVoice:'Read reminders aloud with voice',setSound:'Alert sound on time',testBtn:'Test alert',closeBtn:'Close',tabUpcoming:'Upcoming',tabDone:'Done',editBtn:'Edit',editTitle:'Edit reminder',eSaveBtn:'Save',
+  setTitle:'Settings',setVoice:'Read reminders aloud with voice',setSound:'Alert sound on time',testBtn:'Test alert',closeBtn:'Close',tabUpcoming:'Upcoming',tabDone:'Done',editBtn:'Edit',editTitle:'Edit reminder',eSaveBtn:'Save',delBtn:'Delete',manageTitle:'Manage reminders',emptyShort:'No reminders yet.',
   permText:'🔔 Enable notifications so I can remind you on time!',permBtn:'Enable',
   footText:'Reminder assistant — your data stays private on your device.',
   nPreDayT:'📅 You have tasks tomorrow',nPreHourT:'⏰ Almost time',nPreHourB:'In 30 minutes: ',
@@ -288,7 +297,7 @@ zh:{
   listTitle:'我的任务',emptyBig:'💜',empty:'还没有任务。<br>添加第一个任务吧！',
   secUpcoming:'即将到来 / 已逾期',secDone:'已完成',overdue:'已逾期',bDaily:'每天',bWeekly:'每周',
   nagTitle:'🔔 时间到——婉妮提醒您！',ackBtn:'知道了 ✓',
-  setTitle:'设置',setVoice:'婉妮语音播报提醒',setSound:'整点提示音',testBtn:'测试提示音',closeBtn:'关闭',tabUpcoming:'待办',tabDone:'已完成',editBtn:'编辑',editTitle:'编辑提醒',eSaveBtn:'保存',
+  setTitle:'设置',setVoice:'婉妮语音播报提醒',setSound:'整点提示音',testBtn:'测试提示音',closeBtn:'关闭',tabUpcoming:'待办',tabDone:'已完成',editBtn:'编辑',editTitle:'编辑提醒',eSaveBtn:'保存',delBtn:'删除',manageTitle:'管理提醒',emptyShort:'暂无提醒。',
   permText:'🔔 开启通知，让婉妮准时提醒您！',permBtn:'开启通知',
   footText:'提醒助手——数据仅保存在您的设备上。',
   nPreDayT:'📅 您明天有任务',nPreHourT:'⏰ 时间快到了',nPreHourB:'30分钟后：',
@@ -342,6 +351,7 @@ function applyLang(){
   document.getElementById('ui-eNoteL').textContent=S.fNote;
   document.getElementById('e-note').placeholder=S.fNotePh;
   document.getElementById('ui-eSaveBtn').textContent=S.eSaveBtn;
+  document.getElementById('ui-manageTitle').textContent=S.manageTitle;
   document.getElementById('ui-permText').textContent=S.permText;
   document.getElementById('ui-permBtn').textContent=S.permBtn;
   document.getElementById('ui-footName').textContent=LANG==='zh'?'婉妮':LANG==='en'?'Uyen Nhi':'Uyển Nhi';
@@ -409,7 +419,7 @@ function saveEdit(){
   x.repeat=document.getElementById('e-repeat').value;
   x.note=document.getElementById('e-note').value.trim();
   x.preDayNotified=false;x.preHourNotified=false;x.lastNag=0;
-  saveTasks();closeEdit();render();
+  saveTasks();closeEdit();render();renderManageList();
 }
 function ackTask(id){
   const x=tasks.find(a=>a.id===id);if(!x)return;
@@ -429,7 +439,18 @@ function setTab(tb){curTab=tb;
   document.getElementById('tabUpcoming').classList.toggle('on',tb==='upcoming');
   document.getElementById('tabDone').classList.toggle('on',tb==='done');
   render();}
-function openSettings(){document.getElementById('sheetBackdrop').classList.add('show');}
+function renderManageList(){
+  const ml=document.getElementById('manageList');if(!ml)return;
+  const open=tasks.filter(x=>!x.done).sort((a,b)=>a.when-b.when);
+  if(!open.length){ml.innerHTML='<div class="manage-empty">'+t('emptyShort')+'</div>';return;}
+  ml.innerHTML=open.map(x=>
+    '<div class="manage-item"><div class="manage-info"><div class="manage-title">'+escapeHtml(x.title)+'</div>'
+    +'<div class="manage-time">'+fmtTime(x.when)+'</div></div>'
+    +'<button class="btn-mini" onclick="openEdit('+x.id+')">'+t('editBtn')+'</button>'
+    +'<button class="btn-mini del" onclick="delTask('+x.id+');renderManageList();">'+t('delBtn')+'</button></div>'
+  ).join('');
+}
+function openSettings(){renderManageList();document.getElementById('sheetBackdrop').classList.add('show');}
 function closeSettings(){document.getElementById('sheetBackdrop').classList.remove('show');}
 function render(){
   const list=document.getElementById('taskList'),now=Date.now();
@@ -463,8 +484,7 @@ function render(){
         +(od?'<span class="badge late">'+t('overdue')+'</span>':'')
         +'</div><div class="t-meta"><span class="t-time">'+fmtTime(x.when)+'</span>'
         +(x.note?' · '+escapeHtml(x.note):'')+'</div></div>'
-        +(x.done?'':'<div class="t-btns"><button class="btn-mini ack" onclick="ackTask('+x.id+')">'+t('ackBtn')+'</button><button class="btn-mini" onclick="openEdit('+x.id+')">'+t('editBtn')+'</button><button class="btn-mini del" onclick="delTask('+x.id+')">✕</button></div>')
-        +(x.done?'<div class="t-btns"><button class="btn-mini del" onclick="delTask('+x.id+')">✕</button></div>':'')
+        +(x.done?'':'<div class="t-btns"><button class="btn-mini ack" onclick="ackTask('+x.id+')">'+t('ackBtn')+'</button></div>')
         +'</div>';
     }
   }
