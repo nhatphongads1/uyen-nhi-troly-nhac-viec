@@ -1,4 +1,4 @@
-const CACHE='uyennhi-nhacviec-v8';
+const CACHE='uyennhi-nhacviec-v9';
 const ASSETS=['./','./index.html','./manifest.json','./avatar.png',
   './audio/nag-intro.mp3','./audio/nag-outro.mp3','./audio/preday-intro.mp3',
   './audio/prehour-intro.mp3','./audio/added.mp3','./audio/acked.mp3','./audio/test-ok.mp3'];

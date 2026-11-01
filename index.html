@@ -246,7 +246,7 @@
   </div>
 </div>
 
-<footer><b id="ui-footName">Uyển Nhi</b> · <span id="ui-footText"></span><br><span style="opacity:.6">v8</span></footer>
+<footer><b id="ui-footName">Uyển Nhi</b> · <span id="ui-footText"></span><br><span style="opacity:.6">v9</span></footer>
 
 <script>
 /* ================= I18N ================= */
@@ -467,7 +467,8 @@ function render(){
   document.getElementById('st-today').textContent=todayN;
   document.getElementById('st-pending').textContent=open.length;
   document.getElementById('st-done').textContent=done.length;
-  document.getElementById('statPending').classList.toggle('hot show',open.some(x=>x.when<now));
+  document.getElementById('statPending').classList.toggle('hot',open.some(x=>x.when<now));
+  document.getElementById('statPending').classList.toggle('show',open.some(x=>x.when<now));
   if(!tasks.length){list.innerHTML='<div class="empty"><span class="big">'+t('emptyBig')+'</span>'+t('empty')+'</div>';return;}
   let html='';
   const dueNow=tasks.filter(x=>!x.done&&!x.ack&&x.when<=now);
