@@ -260,7 +260,7 @@
   </div>
 </div>
 
-<footer><b id="ui-footName">Uyển Nhi</b> · <span id="ui-footText"></span><br><span style="opacity:.6">v10</span></footer>
+<footer><b id="ui-footName">Uyển Nhi</b> · <span id="ui-footText"></span><br><span style="opacity:.6">v11</span></footer>
 
 <script>
 /* ================= I18N ================= */
@@ -647,7 +647,7 @@ function beep(){
 }
 /* Giọng Uyển Nhi thật (file thu sẵn) — KHÔNG dùng giọng máy */
 let voiceGen=0;
-function playAudio(src){return new Promise(res=>{try{const a=new Audio(src);a.onended=res;a.onerror=res;a.play().catch(res);}catch(e){res();}});}
+function playAudio(src){return new Promise(res=>{try{const a=new Audio(src);a.volume=1;a.onended=res;a.onerror=res;const pr=a.play();if(pr&&pr.catch)pr.catch(res);}catch(e){res();}});}
 function speakSeq(items){
   if(!settings.voice)return;
   const g=++voiceGen;
@@ -659,37 +659,41 @@ function voiceTest(){speakSeq(['audio/test-ok.mp3']);}
 function voiceNag(){speakSeq(['audio/nag-intro.mp3','audio/nag-outro.mp3']);}
 function voicePreDay(){speakSeq(['audio/preday-intro.mp3']);}
 function voicePreHour(){speakSeq(['audio/prehour-intro.mp3']);}
-/* Chuỗi giọng Uyển Nhi theo từng tình huống (tiếng Việt) */
-function voiceAdd(title){
-  if(LANG==='vi'&&settings.voice)speakSeq([{a:'audio/added.mp3'},{s:title}]);
-  else speak(t('nAddSp').replace('{t}',title));
-}
-function voiceAck(){
-  if(LANG==='vi'&&settings.voice)speakSeq([{a:'audio/acked.mp3'}]);
-  else speak(t('nAckSp'));
-}
-function voiceTest(){
-  if(LANG==='vi'&&settings.voice)speakSeq([{a:'audio/test-ok.mp3'}]);
-  else speak(t('nTestSp'));
-}
-function voiceNag(title,note){
-  if(!(LANG==='vi'&&settings.voice)){speak(t('nNagSp').replace('{t}',title));return;}
-  speakSeq([{a:'audio/nag-intro.mp3'},{s:title+(note?'. '+note:'')},{a:'audio/nag-outro.mp3'}]);
-}
-function voicePreDay(title,whenStr){
-  if(!(LANG==='vi'&&settings.voice)){speak(t('nPreDayT')+'. '+title);return;}
-  speakSeq([{a:'audio/preday-intro.mp3'},{s:title+'. '+whenStr}]);
-}
-function voicePreHour(title){
-  if(!(LANG==='vi'&&settings.voice)){speak(t('nPreHourT')+'. '+title);return;}
-  speakSeq([{a:'audio/prehour-intro.mp3'},{s:title}]);
-}
 function testNotify(){
   beep();voiceTest();
   if('Notification' in window&&Notification.permission==='granted')
     new Notification(t('nTestT'),{body:t('nTestB'),icon:'avatar.png'});
   else askPermission();
 }
+/* Mở khóa âm thanh ngay lần chạm đầu tiên (trình duyệt chặn tiếng nếu chưa tương tác) */
+let audioUnlocked=false;
+function unlockAudio(){
+  if(audioUnlocked)return; audioUnlocked=true;
+  try{
+    const a=new Audio('audio/test-ok.mp3'); a.volume=0; a.play().then(()=>{a.pause();}).catch(()=>{});
+  }catch(e){}
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    if(ctx.state==='suspended')ctx.resume();
+  }catch(e){}
+}
+['pointerdown','touchstart','keydown'].forEach(function(ev){
+  document.addEventListener(ev,unlockAudio,{once:true,passive:true});
+});
+/* Giữ màn hình sáng khi trang đang mở (điện thoại) để lịch nhắc đúng giờ */
+let wakeLock=null;
+async function keepAwake(){
+  try{
+    if('wakeLock' in navigator&&document.visibilityState==='visible'){
+      wakeLock=await navigator.wakeLock.request('screen');
+    }
+  }catch(e){}
+}
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='visible'){ keepAwake(); checkReminders(); }
+});
+keepAwake();
+
 /* ---- Vòng nhắc: tối hôm trước 20:00 → 30 phút trước → dồn dập đến khi "Đã nhớ" ---- */
 function notify(title,body,tag){
   beep();
