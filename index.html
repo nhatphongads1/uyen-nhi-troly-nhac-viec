@@ -246,7 +246,7 @@
   </div>
 </div>
 
-<footer><b id="ui-footName">Uyển Nhi</b> · <span id="ui-footText"></span></footer>
+<footer><b id="ui-footName">Uyển Nhi</b> · <span id="ui-footText"></span><br><span style="opacity:.6">v8</span></footer>
 
 <script>
 /* ================= I18N ================= */
@@ -367,7 +367,14 @@ document.getElementById('langSw').addEventListener('click',e=>{
 /* ================= APP LOGIC ================= */
 const LS_KEY='uyennhi_reminders_v1', SET_KEY='uyennhi_reminder_settings';
 let tasks=loadTasks(), settings=loadSettings();
-function loadTasks(){try{return JSON.parse(localStorage.getItem(LS_KEY))||[]}catch(e){return[]}}
+function loadTasks(){try{
+  const a=JSON.parse(localStorage.getItem(LS_KEY))||[];
+  return a.filter(x=>x&&typeof x==='object').map(x=>({
+    id:x.id||Date.now()+Math.random(), title:String(x.title||''), when:Number(x.when)||Date.now(),
+    repeat:['none','daily','weekly'].includes(x.repeat)?x.repeat:'none', note:String(x.note||''),
+    done:!!x.done, preDayNotified:!!x.preDayNotified, preHourNotified:!!x.preHourNotified,
+    ack:false, lastNag:Number(x.lastNag)||0 }));
+}catch(e){return[]}}
 function saveTasks(){localStorage.setItem(LS_KEY,JSON.stringify(tasks));}
 function loadSettings(){try{return Object.assign({voice:true,sound:true},JSON.parse(localStorage.getItem(SET_KEY))||{})}catch(e){return{voice:true,sound:true}}}
 function saveSettings(){localStorage.setItem(SET_KEY,JSON.stringify(settings));}
@@ -475,6 +482,7 @@ function render(){
     if(!g[1].length){html+='<div class="empty"><span class="big">'+t('emptyBig')+'</span>'+t('empty')+'</div>';continue;}
     html+='<div class="section-title">'+g[0]+'</div>';
     for(const x of g[1]){
+      try{
       const od=!x.done&&x.when<now;
       html+='<div class="task'+(x.done?' done':'')+(od?' overdue':'')+'">'
         +'<div class="check" onclick="toggleDone('+x.id+')">'+(x.done?'✓':'')+'</div>'
@@ -486,6 +494,7 @@ function render(){
         +(x.note?' · '+escapeHtml(x.note):'')+'</div></div>'
         +(x.done?'':'<div class="t-btns"><button class="btn-mini ack" onclick="ackTask('+x.id+')">'+t('ackBtn')+'</button></div>')
         +'</div>';
+      }catch(e){console.warn('task render failed',e);}
     }
   }
   list.innerHTML=html;
